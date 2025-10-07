@@ -27,12 +27,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         Empleado empleado = empleadoRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
 
-        // ⚠ Ojo: como en la entidad Rol lo tenés como String, no uses .name()
         GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + empleado.getRol());
 
         return new User(
                 empleado.getUsername(),
-                empleado.getPassword(), // ✅ usamos password en texto plano
+                empleado.getPassword(),
                 Collections.singletonList(authority)
         );
     }

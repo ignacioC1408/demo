@@ -8,11 +8,11 @@ public class LoginController {
 
     @GetMapping("/login")
     public String login() {
-        return "login"; // login.html
+        return "login"; // login.html para EMPLEADOS
     }
 
     @GetMapping("/logout-success")
     public String logout() {
-        return "redirect:/login?logout"; // redirige al login cuando cierra sesión
+        return "redirect:/login?logout";
     }
 }
