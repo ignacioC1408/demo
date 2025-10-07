@@ -3,6 +3,7 @@ package com.example.puntofacil.demo.service;
 import org.springframework.stereotype.Service;
 
 import com.example.puntofacil.demo.entity.EstadoPago;
+import com.example.puntofacil.demo.entity.EstadoPedido;
 import com.example.puntofacil.demo.entity.MetodoPago;
 import com.example.puntofacil.demo.entity.Pago;
 import com.example.puntofacil.demo.entity.Pedido; 
@@ -20,6 +21,15 @@ public class PagoService {
         this.pagoRepository = pagoRepository;
         this.pedidoRepository = pedidoRepository;
     }
+    
+    /** 
+     * @param pedidoId ID del pedido
+     * @param metodo Método de pago (MERCADOPAGO, EFECTIVO, TRANSFERENCIA)
+     * @param mpPaymentId Identificador externo de Mercado Pago
+     * @param estadoMp Estado recibido desde MP (APPROVED, REJECTED, etc.)
+     * @param monto Monto pagado
+     * @return Pago registrado
+     */
 
     public void registrarPago(Long pedidoId, MetodoPago metodo, String mpPaymentId, String estadoMp, BigDecimal monto) {
         Pedido pedido = pedidoRepository.findById(pedidoId).orElseThrow();
@@ -41,7 +51,7 @@ public class PagoService {
 
         // Si el pago fue aprobado, actualizamos el pedido
         if (pago.getEstado() == EstadoPago.RECIBIDO) {
-            pedido.setEstado("PAGADO");
+            pedido.setEstado (EstadoPedido.PAGADO);
             pedidoRepository.save(pedido);
         }
     }

@@ -12,19 +12,29 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "codigo_retiro", nullable = false, unique = true, length = 10)    
     private String codigoRetiro;
+    
+    @Column(name = "qr_code_url", length = 255)
     private String qrCodeUrl;
+    
+    @Column(nullable = false)
     private LocalDateTime fecha;
-    private String estado; // PENDIENTE, PAGADO, PREPARANDO, etc.
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private EstadoPedido estado = EstadoPedido.PENDIENTE;  
+    
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal total;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pago> pagos;
 
     public Pedido() {
     }
 
-    public Pedido(Long id, String codigoRetiro, String qrCodeUrl, LocalDateTime fecha, String estado, BigDecimal total,
+    public Pedido(Long id, String codigoRetiro, String qrCodeUrl, LocalDateTime fecha, EstadoPedido estado, BigDecimal total,
             List<Pago> pagos) {
         this.id = id;
         this.codigoRetiro = codigoRetiro;
@@ -67,11 +77,11 @@ public class Pedido {
         this.fecha = fecha;
     }
 
-    public String getEstado() {
+    public EstadoPedido getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoPedido estado) {
         this.estado = estado;
     }
 
@@ -90,6 +100,5 @@ public class Pedido {
     public void setPagos(List<Pago> pagos) {
         this.pagos = pagos;
     }
-
     
 }
