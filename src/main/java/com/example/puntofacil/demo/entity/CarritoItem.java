@@ -1,6 +1,9 @@
 package com.example.puntofacil.demo.entity;
 
+import java.math.BigDecimal;
+
 public class CarritoItem {
+
     private Producto producto;
     private int cantidad;
 
@@ -9,23 +12,13 @@ public class CarritoItem {
         this.cantidad = cantidad;
     }
 
-    public Producto getProducto() {
-        return producto;
-    }
+    public Producto getProducto() { return producto; }
+    public void setProducto(Producto producto) { this.producto = producto; }
 
-    public void setProducto(Producto producto) {
-        this.producto = producto;
-    }
+    public int getCantidad() { return cantidad; }
+    public void setCantidad(int cantidad) { this.cantidad = cantidad; }
 
-    public int getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
-    }
-
-    public double getSubtotal() {
-        return producto.getPrecioBase().doubleValue() * cantidad;
+    public BigDecimal getSubtotal() {
+        return producto.getPrecioBase().multiply(BigDecimal.valueOf(cantidad));
     }
 }

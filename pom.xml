@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.4</version> <!-- Cambiado: 3.5.6 → 3.3.4 (última estable) -->
+		<version>3.3.4</version>
 		<relativePath/>
 	</parent>
 
@@ -73,6 +73,25 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!-- 🔹 MERCADO PAGO SDK (NUEVO) -->
+		<dependency>
+			<groupId>com.mercadopago</groupId>
+			<artifactId>sdk-java</artifactId>
+			<version>2.1.14</version>
+		</dependency>
+
+		<!-- JSON processing (necesario para Mercado Pago) -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+
+		<!-- HTTP Client (necesario para Mercado Pago) -->
+		<dependency>
+			<groupId>org.apache.httpcomponents.client5</groupId>
+			<artifactId>httpclient5</artifactId>
+		</dependency>
+
 		<!-- 🔹 Opcionales recomendados -->
 		<!-- DevTools: autoreload en desarrollo -->
 		<dependency>
@@ -114,7 +133,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<release>21</release> <!-- 🔹 añadido para compilar con Java 21 -->
+					<release>21</release>
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.projectlombok</groupId>
