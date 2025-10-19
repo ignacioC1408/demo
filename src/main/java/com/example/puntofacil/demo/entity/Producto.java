@@ -36,6 +36,10 @@ public class Producto {
     @Column(precision = 10, scale = 3)
     private BigDecimal stock;
 
+    // ✅ NUEVO CAMPO AGREGADO - con valor por defecto para no romper datos existentes
+    @Column(name = "categoria_id")
+    private Long categoriaId = 1L; // Valor por defecto
+
     public Producto() {}
 
     public Producto(Integer codigoProducto, String nombre, String codigoBarra,
@@ -46,6 +50,7 @@ public class Producto {
         this.precioBase = precioBase;
         this.unidadMedida = unidadMedida;
         this.stock = stock;
+        this.categoriaId = 1L; // Valor por defecto en constructor
     }
 
     // getters y setters
@@ -69,4 +74,8 @@ public class Producto {
 
     public BigDecimal getStock() { return stock; }
     public void setStock(BigDecimal stock) { this.stock = stock; }
+
+    // ✅ NUEVOS GETTER Y SETTER PARA categoriaId
+    public Long getCategoriaId() { return categoriaId; }
+    public void setCategoriaId(Long categoriaId) { this.categoriaId = categoriaId; }
 }

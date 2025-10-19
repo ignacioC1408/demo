@@ -1,5 +1,7 @@
 package com.example.puntofacil.demo.controller;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,14 +30,20 @@ public class PasswordController {
                                   @RequestParam String nueva,
                                   @RequestParam String username,
                                   Model model) {
-        Empleado empleado = empleadoRepository.findByUsername(username).orElse(null);
 
-        if (empleado != null && empleado.getPassword().equals(actual)) {
-            empleado.setPassword(nueva);
-            empleadoRepository.save(empleado);
-            model.addAttribute("mensaje", "Contraseña actualizada correctamente.");
+        Optional<Empleado> optEmpleado = empleadoRepository.findByUsername(username);
+
+        if (optEmpleado.isPresent()) {
+            Empleado empleado = optEmpleado.get();
+            if (empleado.getPassword().equals(actual)) {
+                empleado.setPassword(nueva);
+                empleadoRepository.save(empleado);
+                model.addAttribute("mensaje", "Contraseña actualizada correctamente.");
+            } else {
+                model.addAttribute("mensaje", "La contraseña actual no es correcta.");
+            }
         } else {
-            model.addAttribute("mensaje", "La contraseña actual no es correcta.");
+            model.addAttribute("mensaje", "Usuario no encontrado.");
         }
 
         return "cambiar_password";

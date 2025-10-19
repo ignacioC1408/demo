@@ -13,7 +13,7 @@ import com.example.puntofacil.demo.entity.Producto;
 import com.example.puntofacil.demo.repository.ProductoRepository;
 
 @Controller
-@RequestMapping("/producto") // CAMBIADO: de "/usuario" a "/producto"
+@RequestMapping("/usuario/productos") // ✅ RUTA PARA USUARIOS
 public class ProductoController {
 
     private final ProductoRepository productoRepository;
@@ -22,14 +22,14 @@ public class ProductoController {
         this.productoRepository = productoRepository;
     }
 
-    @GetMapping("/lista") // CAMBIADO: de "/productos" a "/lista"
+    @GetMapping("/lista")
     public String listarProductos(Model model) {
         model.addAttribute("productos", productoRepository.findAll());
-        return "producto-lista"; // Cambiar también el template si es necesario
+        return "producto-lista"; // Template para usuarios
     }
 
-    // Endpoint para devolver el step por unidad (usado si necesitás JS dinámico)
-    @GetMapping("/{id}/step") // CAMBIADO: ahora es "/producto/{id}/step"
+    // Endpoint para devolver el step por unidad (usado en carrito)
+    @GetMapping("/{id}/step")
     @ResponseBody
     public String getStep(@PathVariable Long id) {
         Optional<Producto> opt = productoRepository.findById(id);
@@ -39,7 +39,6 @@ public class ProductoController {
             if ("KG".equalsIgnoreCase(um)) return "0.1";
             if ("UNIDAD".equalsIgnoreCase(um)) return "1";
             if ("LT".equalsIgnoreCase(um)) return "0.1";
-            // por defecto:
             return "1";
         }
         return "1";

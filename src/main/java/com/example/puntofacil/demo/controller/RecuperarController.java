@@ -1,5 +1,7 @@
 package com.example.puntofacil.demo.controller;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,13 +27,15 @@ public class RecuperarController {
 
     @PostMapping("/recuperar")
     public String procesarRecuperacion(@RequestParam String username, Model model) {
-        Empleado empleado = empleadoRepository.findByUsername(username).orElse(null);
+        Optional<Empleado> optEmpleado = empleadoRepository.findByUsername(username);
 
-        if (empleado != null) {
+        if (optEmpleado.isPresent()) {
             model.addAttribute("mensaje", "Usuario encontrado. Contacta con el administrador para restablecer tu contraseña.");
         } else {
             model.addAttribute("error", "Usuario no encontrado.");
         }
+
         return "recuperar";
     }
 }
+

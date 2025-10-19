@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<body>
+    <div th:fragment="ventasFragment">
+        <div class="card p-3">
+            <h4>Ventas (Pedidos)</h4>
+
+            <form class="row g-2 mb-3" th:action="@{/empleado/panel/ventas}" method="get">
+                <div class="col-auto">
+                    <label class="form-label small">Desde</label>
+                    <input type="date" name="desde" class="form-control" th:value="${desde}" />
+                </div>
+                <div class="col-auto">
+                    <label class="form-label small">Hasta</label>
+                    <input type="date" name="hasta" class="form-control" th:value="${hasta}" />
+                </div>
+                <div class="col-auto align-self-end">
+                    <button class="btn btn-primary">Filtrar</button>
+                </div>
+            </form>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="p : ${pedidos}">
+                        <td th:text="${p.id}">1</td>
+                        <td th:text="${#temporals.format(p.fecha, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
+                        <td th:text="${p.clienteId}">Cliente</td>
+                        <td th:text="${#numbers.formatDecimal(p.total,1,2)}">$0.00</td>
+                        <td>
+                            <span th:class="${p.estado == 'PENDIENTE'} ? 'badge badge-pendiente' : (p.estado == 'APROBADO' ? 'badge badge-aprobado' : 'badge badge-rechazado')" th:text="${p.estado}">PENDIENTE</span>
+                        </td>
+                        <td>
+                            <a th:href="@{'/empleado/panel/detalle'(pedidoId=${p.id})}" class="btn btn-sm btn-outline-secondary">Ver detalle</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(pedidos)}">
+                        <td colspan="6">No hay pedidos en el rango seleccionado.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

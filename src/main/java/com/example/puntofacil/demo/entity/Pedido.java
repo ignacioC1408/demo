@@ -2,6 +2,7 @@ package com.example.puntofacil.demo.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -23,43 +24,109 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // si guardaste usuario en entity Usuario en package entity:
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-    @Column(name = "codigo_retiro", unique = true, nullable = false)
-    private String codigoRetiro;
+    @Column(nullable = false)
+    private LocalDateTime fecha;
 
-    @Column(name = "qr_code_url")
-    private String qrCodeUrl;
-
-    private LocalDateTime fecha = LocalDateTime.now();
-
-    @Column(length = 20)
-    private String estado; // PENDIENTE, PAGADO, PREPARANDO, LISTO, ENTREGADO, CANCELADO
-
-    @Column(precision = 10, scale = 2)
+    @Column(nullable = false)
     private BigDecimal total;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<DetallePedido> detalles;
+    @Column(length = 50)
+    private String estado;
 
-    // getters / setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Usuario getUsuario() { return usuario; }
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
-    public String getCodigoRetiro() { return codigoRetiro; }
-    public void setCodigoRetiro(String codigoRetiro) { this.codigoRetiro = codigoRetiro; }
-    public String getQrCodeUrl() { return qrCodeUrl; }
-    public void setQrCodeUrl(String qrCodeUrl) { this.qrCodeUrl = qrCodeUrl; }
-    public LocalDateTime getFecha() { return fecha; }
-    public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
-    public BigDecimal getTotal() { return total; }
-    public void setTotal(BigDecimal total) { this.total = total; }
-    public List<DetallePedido> getDetalles() { return detalles; }
-    public void setDetalles(List<DetallePedido> detalles) { this.detalles = detalles; }
+    @Column(unique = true, length = 10)
+    private String codigoRetiro;
+
+    @Column(length = 255)
+    private String qrCodeUrl;
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DetallePedido> detalles = new ArrayList<>();
+
+    // ===== CONSTRUCTORES =====
+    public Pedido() {
+        this.fecha = LocalDateTime.now();
+        this.estado = "PENDIENTE";
+    }
+
+    // ===== GETTERS & SETTERS =====
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public LocalDateTime getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDateTime fecha) {
+        this.fecha = fecha;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getCodigoRetiro() {
+        return codigoRetiro;
+    }
+
+    public void setCodigoRetiro(String codigoRetiro) {
+        this.codigoRetiro = codigoRetiro;
+    }
+
+    public String getQrCodeUrl() {
+        return qrCodeUrl;
+    }
+
+    public void setQrCodeUrl(String qrCodeUrl) {
+        this.qrCodeUrl = qrCodeUrl;
+    }
+
+    public List<DetallePedido> getDetalles() {
+        return detalles;
+    }
+
+    public void setDetalles(List<DetallePedido> detalles) {
+        this.detalles = detalles;
+    }
+
+    // ===== MÉTODOS AUXILIARES =====
+
+    public void addDetalle(DetallePedido detalle) {
+        detalles.add(detalle);
+        detalle.setPedido(this);
+    }
+
+    public void removeDetalle(DetallePedido detalle) {
+        detalles.remove(detalle);
+        detalle.setPedido(null);
+    }
 }

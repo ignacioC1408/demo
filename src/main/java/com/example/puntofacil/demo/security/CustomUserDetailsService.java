@@ -1,6 +1,7 @@
 package com.example.puntofacil.demo.security;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,10 +25,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Empleado empleado = empleadoRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
+        Optional<Empleado> optEmpleado = empleadoRepository.findByUsername(username);
 
-        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + empleado.getRol());
+        if (optEmpleado.isEmpty()) {
+            throw new UsernameNotFoundException("Usuario no encontrado: " + username);
+        }
+
+        Empleado empleado = optEmpleado.get();
+
+        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + empleado.getRol().toUpperCase());
 
         return new User(
                 empleado.getUsername(),
