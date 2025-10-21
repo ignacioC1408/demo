@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html th:replace="~{paneles/panel-base :: html}">
+<head>
+    <title>Panel Vendedor</title>
+</head>
+<body>
+    <div th:replace="~{paneles/panel-base :: navbar}"></div>
+    
+    <div th:fragment="contenido" class="content-wrapper">
+        <h1>Panel Vendedor</h1>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h3>Catálogo</h3>
+                    <a href="/vendedor/productos" class="btn btn-primary">Ver Productos</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h3>Clientes</h3>
+                    <a href="/vendedor/clientes" class="btn btn-info">Gestionar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
