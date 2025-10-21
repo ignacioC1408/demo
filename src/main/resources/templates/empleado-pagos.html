@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Pagos - Punto Fácil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="/images/logo.png">
+    <link rel="stylesheet" href="/css/pagos.css">
+</head>
 <body>
     <div th:fragment="pagosFragment">
         <div class="card p-3">
             <h4>Seguimiento de Pagos</h4>
-
             <form class="mb-3 row g-2" th:action="@{/empleado/panel/pagos}" method="get">
                 <div class="col-auto">
                     <label class="form-label small">Estado</label>

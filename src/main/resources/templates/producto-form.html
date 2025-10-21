@@ -1,67 +1,106 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Nuevo Producto - Punto Fácil</title>
-  <style>
-    body { font-family: Arial; background-color: #f9f9f9; }
-    header { background-color: #283593; color: white; text-align: center; padding: 15px; font-weight: bold; }
-    form {
-      width: 400px;
-      margin: 30px auto;
-      padding: 20px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    }
-    label { display: block; margin-top: 10px; font-weight: bold; }
-    input, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    button {
-      margin-top: 15px;
-      width: 100%;
-      background-color: #1a237e;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover { background-color: #3949ab; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agregar Nuevo Producto - Punto Fácil</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="icon" href="/images/logo.png" type="image/png">
+  <link rel="stylesheet" href="/css/formulario.css">
 </head>
 <body>
-  <header>Agregar / Editar Producto</header>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="/empleado/panel/inicio">
+                <img src="/images/logo.png" alt="Logo Punto Fácil" width="40" height="40" class="me-2">
+                <span>Punto Fácil</span>
+            </a>
+            <div class="nav-links">
+                <a href="/empleado/panel/inicio">🏠 Inicio</a>
+                <a href="/empleado/panel/ventas">💰 Ventas</a>
+                <a href="/empleado/panel/stock">📦 Stock</a>
+                <a href="/empleado/productos" class="active">🛒 Productos</a>
+            </div>
+        </div>
+    </nav>
 
-  <form th:action="@{/empleado/productos/guardar}" method="post" th:object="${producto}">
-    <label>Código Producto:</label>
-    <input type="text" th:field="*{codigoProducto}" required>
+    <!-- Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1 th:text="${producto.id != null} ? 'Editar Producto' : 'Agregar Nuevo Producto'"></h1>
+            <p th:text="${producto.id != null} ? 'Modifica la información del producto existente' : 'Completa el formulario para agregar un nuevo producto al sistema'"></p>
+        </div>
+    </div>
 
-    <label>Nombre:</label>
-    <input type="text" th:field="*{nombre}" required>
+    <!-- Formulario -->
+    <main class="container container-sm">
+    <form th:action="@{/empleado/productos/guardar}" method="post" th:object="${producto}" class="product-form">
+        <input type="hidden" th:field="*{id}">
+        
+        <div class="row mb-3 g-4"> 
+            <div class="col-md-6"> <label for="codigoProducto" class="form-label">📋 Código del Producto:</label>
+                <input type="text" th:field="*{codigoProducto}" class="form-control" id="codigoProducto" required 
+                       placeholder="Ej: PROD-001">
+                <small class="text-muted">Código único identificador del producto</small>
+            </div>
 
-    <label>Precio Base:</label>
-    <input type="number" step="0.01" th:field="*{precioBase}" required>
+            <div class="col-md-6"> <label for="nombre" class="form-label">🏷️ Nombre del Producto:</label>
+                <input type="text" th:field="*{nombre}" class="form-control" id="nombre" required 
+                       placeholder="Ej: Arroz Integral">
+                <small class="text-muted">Nombre descriptivo del producto</small>
+            </div>
+        </div>
 
-    <label>Unidad de Medida:</label>
-    <select th:field="*{unidadMedida}">
-      <option value="KG">KG</option>
-      <option value="LT">LT</option>
-      <option value="UNIDAD">UNIDAD</option>
-    </select>
+        <div class="row mb-3 g-4">
+            <div class="col-md-6">
+                <label for="precioBase" class="form-label">💰 Precio Base:</label>
+                <input type="number" step="0.01" th:field="*{precioBase}" class="form-control" id="precioBase" required 
+                       placeholder="0.00" min="0">
+                <small class="text-muted">Precio de venta unitario</small>
+            </div>
 
-    <label>Stock:</label>
-    <input type="number" step="0.001" th:field="*{stock}" required>
+            <div class="col-md-6">
+                <label for="stock" class="form-label">📦 Stock Disponible:</label>
+                <input type="number" step="0.001" th:field="*{stock}" class="form-control" id="stock" required 
+                       placeholder="0.000" min="0">
+                <small class="text-muted">Cantidad disponible en inventario</small>
+            </div>
+        </div>
 
-    <label>Categoría ID:</label>
-    <input type="number" th:field="*{categoriaId}" required>
+        <div class="row mb-4 g-4">
+            <div class="col-md-6">
+                <label for="unidadMedida" class="form-label">📏 Unidad de Medida:</label>
+                <select th:field="*{unidadMedida}" class="form-select" id="unidadMedida" required>
+                    <option value="">Seleccione una unidad...</option>
+                    <option value="KG">Kilogramos (KG)</option>
+                    <option value="LT">Litros (LT)</option>
+                    <option value="UNIDAD">Unidades (UNIDAD)</option>
+                </select>
+                <small class="text-muted">Unidad de medida para venta e inventario</small>
+            </div>
 
-    <button type="submit">Guardar Producto</button>
-  </form>
+            <div class="col-md-6">
+                <label for="categoriaId" class="form-label">📂 Categoría:</label>
+                <input type="number" th:field="*{categoriaId}" class="form-control" id="categoriaId" required 
+                       placeholder="Ej: 1" min="1">
+                <small class="text-muted">ID numérico de la categoría del producto</small>
+            </div>
+        </div>
+
+        <div class="form-actions mt-4 pt-3 border-top">
+            <a th:href="@{/empleado/productos}" class="btn-cancel">
+                ❌ Cancelar
+            </a>
+            <button type="submit" class="btn-submit">
+                💾 <span th:text="${producto.id != null} ? 'Actualizar Producto' : 'Guardar Producto'"></span>
+            </button>
+        </div>
+    </form>
+</main>
+
+    <footer class="page-footer">
+        <p>&copy; 2024 Punto Fácil. Todos los derechos reservados.</p>
+    </footer>
 </body>
 </html>
