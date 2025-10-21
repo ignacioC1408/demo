@@ -30,43 +30,40 @@ public class EmpleadoLoginController {
     }
 
     @PostMapping("/login")
-    public String procesarLogin(@RequestParam String username,
-                                @RequestParam String password,
-                                HttpSession session,
-                                Model model) {
+public String procesarLogin(@RequestParam String username,
+                            @RequestParam String password,
+                            HttpSession session,
+                            Model model) {
 
-        Optional<Empleado> optEmpleado = empleadoRepository.findByUsername(username);
+    Optional<Empleado> optEmpleado = empleadoRepository.findByUsername(username);
 
-        if (optEmpleado.isEmpty()) {
-            model.addAttribute("error", "Usuario no encontrado");
-            return "empleado-login";
-        }
-
-        Empleado empleado = optEmpleado.get();
-
-        // 🔐 Verificación básica
-        if (!empleado.getPassword().equals(password)) {
-            model.addAttribute("error", "Contraseña incorrecta");
-            return "empleado-login";
-        }
-
-        // Guardar sesión
-        session.setAttribute("empleado", empleado);
-
-        // ✅ REDIRECCIONES CORREGIDAS - ahora apuntan a las rutas correctas
-        switch (empleado.getRol().toUpperCase()) {
-            case "DUEÑO":
-                return "redirect:/empleado/panel/admin";    // ← CORREGIDO
-            case "CAJERA":
-                return "redirect:/empleado/panel/cajera";   // ← CORREGIDO
-            case "VENDEDOR":
-                return "redirect:/empleado/panel/vendedor"; // ← CORREGIDO
-            default:
-                model.addAttribute("error", "Rol desconocido");
-                return "empleado-login";
-        }
+    if (optEmpleado.isEmpty()) {
+        model.addAttribute("error", "Usuario no encontrado");
+        return "empleado-login";
     }
 
+    Empleado empleado = optEmpleado.get();
+
+    if (!empleado.getPassword().equals(password)) {
+        model.addAttribute("error", "Contraseña incorrecta");
+        return "empleado-login";
+    }
+
+    session.setAttribute("empleado", empleado);
+
+    // Redirige según el rol (usa los valores que tengas en tu BD)
+    switch (empleado.getRol().toUpperCase()) {
+        case "ADMIN", "DUENIO":
+            return "redirect:/empleado/panel/admin";
+        case "CAJERO", "CAJERA":
+            return "redirect:/empleado/panel/cajero"; // Cambié a cajero
+        case "VENDEDOR":
+            return "redirect:/empleado/panel/vendedor";
+        default:
+            model.addAttribute("error", "Rol desconocido");
+            return "empleado-login";
+    }
+}
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
