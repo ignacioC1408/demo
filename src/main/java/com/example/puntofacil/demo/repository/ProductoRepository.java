@@ -15,4 +15,6 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
     // Verificar si existe un producto con determinado código
     boolean existsByCodigoProducto(Integer codigoProducto);
+
+    long count();
 }

@@ -45,7 +45,7 @@ public class EmpleadoProductoController {
         Optional<Producto> producto = productoRepository.findById(id);
         if (producto.isPresent()) {
             model.addAttribute("producto", producto.get());
-            return "producto-form"; // ← CAMBIADO: sin "empleado/"
+            return "producto-form"; 
         }
         return "redirect:/empleado/productos";
     }

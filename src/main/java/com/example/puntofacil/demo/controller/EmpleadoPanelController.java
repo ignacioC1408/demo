@@ -2,22 +2,23 @@ package com.example.puntofacil.demo.controller;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.puntofacil.demo.entity.Empleado;
+import com.example.puntofacil.demo.entity.EstadoPedido;
 import com.example.puntofacil.demo.entity.Pedido;
+import com.example.puntofacil.demo.repository.EmpleadoRepository;
 import com.example.puntofacil.demo.repository.PedidoRepository;
+import com.example.puntofacil.demo.repository.ProductoRepository;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -25,195 +26,156 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/empleado/panel")
 public class EmpleadoPanelController {
 
+    private final SimpMessagingTemplate messagingTemplate;
     private final PedidoRepository pedidoRepository;
 
-    public EmpleadoPanelController(PedidoRepository pedidoRepository) {
+    @Autowired
+    private ProductoRepository productoRepository;
+
+    @Autowired
+    private EmpleadoRepository empleadoRepository;
+
+    public EmpleadoPanelController(PedidoRepository pedidoRepository,
+                                   SimpMessagingTemplate messagingTemplate) {
         this.pedidoRepository = pedidoRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
-    // MÉTODO DE INICIO QUE REDIRIGE SEGÚN ROL
+    // =====================================
+    // PANELES PRINCIPALES (admin, cajero, vendedor)
+    // =====================================
+
     @GetMapping("/inicio")
-    public String panelInicio(HttpSession session) {
+    public String panelInicio(HttpSession session, RedirectAttributes redirectAttributes) {
         Empleado empleado = (Empleado) session.getAttribute("empleado");
-        
-        if (empleado == null) {
-            return "redirect:/empleado/login";
-        }
-        
-        // Redirige según el rol (usa DUENIO o ADMIN según lo que tengas en BD)
-        return switch(empleado.getRol().toUpperCase()) {
-            case "ADMIN", "DUENIO" -> "redirect:/empleado/panel/admin";
-            case "CAJERO", "CAJERA" -> "redirect:/empleado/panel/cajero";
-            case "VENDEDOR" -> "redirect:/empleado/panel/vendedor";
-            default -> "redirect:/empleado/login?error=rol_no_valido";
-        };
-    }
+        if (empleado == null) return "redirect:/empleado/login";
 
-    // PANEL ADMIN - Solo para ADMIN/DUENIO
-    @GetMapping("/admin")
-    public String panelAdmin(HttpSession session, Model model) {
-        if (!validarRol(session, List.of("ADMIN", "DUENIO"))) {
-            return "redirect:/empleado/panel/inicio?error=acceso_denegado";
-        }
-        System.out.println("✅ DEBUG: Accediendo a panel admin");
-        
-        // Agregar estadísticas específicas para admin
-        agregarEstadisticasAdmin(model);
-        return "paneles/panel-admin";
-    }
-
-    // PANEL CAJERO - Solo para CAJERO/CAJERA y ADMIN
-    @GetMapping("/cajero")
-    public String panelCajero(HttpSession session, Model model) {
-        if (!validarRol(session, List.of("CAJERO", "CAJERA", "ADMIN", "DUENIO"))) {
-            return "redirect:/empleado/panel/inicio?error=acceso_denegado";
-        }
-        System.out.println("✅ DEBUG: Accediendo a panel cajero");
-        
-        // Agregar datos específicos para cajero
-        agregarEstadisticasCajero(model);
-        return "paneles/panel-cajero"; // Asegúrate de que esta vista existe
-    }
-
-    // PANEL VENDEDOR - Solo para VENDEDOR y ADMIN
-    @GetMapping("/vendedor")
-    public String panelVendedor(HttpSession session, Model model) {
-        if (!validarRol(session, List.of("VENDEDOR", "ADMIN", "DUENIO"))) {
-            return "redirect:/empleado/panel/inicio?error=acceso_denegado";
-        }
-        System.out.println("✅ DEBUG: Accediendo a panel vendedor");
-        
-        // Agregar datos específicos para vendedor
-        agregarEstadisticasVendedor(model);
-        return "paneles/panel-vendedor";
-    }
-
-    // MÉTODOS COMPARTIDOS CON VALIDACIÓN DE ROL
-    @GetMapping("/ventas")
-    public String panelVentas(HttpSession session) {
-        Empleado empleado = (Empleado) session.getAttribute("empleado");
         return switch (empleado.getRol().toUpperCase()) {
             case "ADMIN", "DUENIO" -> "redirect:/empleado/panel/admin";
             case "CAJERO", "CAJERA" -> "redirect:/empleado/panel/cajero";
             case "VENDEDOR" -> "redirect:/empleado/panel/vendedor";
-            default -> "redirect:/empleado/login?error=rol_no_valido";
+            default -> {
+                redirectAttributes.addFlashAttribute("error", "Rol no válido");
+                yield "redirect:/empleado/login";
+            }
         };
     }
-    @GetMapping("/stock")
-    public String panelStock(HttpSession session, Model model) {
-        if (!validarRol(session, List.of("VENDEDOR", "ADMIN", "DUENIO"))) {
-            return "redirect:/empleado/panel/inicio?error=acceso_denegado";
-        }
-        System.out.println("✅ Accediendo a stock");
-        return "empleado-productos";
+
+    @GetMapping("/admin")
+    public String panelAdmin(HttpSession session, Model model) {
+        if (!addGlobalAttributes(session, model)) return "redirect:/empleado/login";
+        if (!validarRol(session, List.of("ADMIN", "DUENIO"))) return "redirect:/empleado/login?error=acceso_denegado";
+        agregarEstadisticasAdmin(model);
+        return "panel-admin";
     }
 
-    @GetMapping("/productos")
-    public String panelProductos(HttpSession session, Model model) {
-        if (!validarRol(session, List.of("ADMIN", "DUENIO"))) {
-            return "redirect:/empleado/panel/inicio?error=acceso_denegado";
-        }
-        System.out.println("✅ Accediendo a productos");
-        return "producto-list"; // Cambié a producto-list que es tu vista existente
+    @GetMapping("/cajero")
+    public String panelCajero(HttpSession session, Model model) {
+        if (!addGlobalAttributes(session, model)) return "redirect:/empleado/login";
+        if (!validarRol(session, List.of("CAJERO", "CAJERA", "ADMIN", "DUENIO"))) return "redirect:/empleado/login?error=acceso_denegado";
+        agregarEstadisticasCajero(model);
+        return "panel-cajero";
     }
 
-    // MÉTODOS EXISTENTES ACTUALIZADOS
-    @GetMapping
-    public String panelHome(HttpSession session, Model model) {
-        Empleado empleado = (Empleado) session.getAttribute("empleado");
-        if (empleado == null) {
-            return "redirect:/empleado/login";
-        }
-
-        // Tu lógica existente de panelHome
-        List<Pedido> todos = pedidoRepository.findAll();
-        Map<String, Long> cuentasPorEstado = todos.stream()
-                .collect(Collectors.groupingBy(p -> p.getEstado() == null ? "SIN_ESTADO" : p.getEstado(), Collectors.counting()));
-        model.addAttribute("cuentasPorEstado", cuentasPorEstado);
-
-        YearMonth ym = YearMonth.now();
-        LocalDate desdeMes = ym.atDay(1);
-        LocalDate hastaMes = ym.atEndOfMonth();
-
-        LocalDate desdeAnio = LocalDate.of(LocalDate.now().getYear(), 1, 1);
-        LocalDate hastaAnio = LocalDate.of(LocalDate.now().getYear(), 12, 31);
-
-        BigDecimal totalMes = pedidoRepository.sumTotalByFechaBetween(desdeMes, hastaMes);
-        BigDecimal totalAnio = pedidoRepository.sumTotalByFechaBetween(desdeAnio, hastaAnio);
-
-        model.addAttribute("totalMes", totalMes == null ? BigDecimal.ZERO : totalMes);
-        model.addAttribute("totalAnio", totalAnio == null ? BigDecimal.ZERO : totalAnio);
-        model.addAttribute("ultimosPedidos", pedidoRepository.findByFechaBetween(desdeMes.minusDays(7), hastaMes));
-
-        return "empleado/panel-home";
+    @GetMapping("/vendedor")
+    public String panelVendedor(HttpSession session, Model model) {
+        if (!addGlobalAttributes(session, model)) return "redirect:/empleado/login";
+        if (!validarRol(session, List.of("VENDEDOR", "ADMIN", "DUENIO"))) return "redirect:/empleado/login?error=acceso_denegado";
+        agregarEstadisticasVendedor(model);
+        return "panel-vendedor";
     }
+
+    // =====================================
+    // GESTIÓN DE PEDIDOS
+    // =====================================
 
     @GetMapping("/pedidos")
-    public String listarPedidos(@RequestParam(value="estado", required=false) String estado, 
-                               HttpSession session, Model model) {
-        Empleado empleado = (Empleado) session.getAttribute("empleado");
-        if (empleado == null) {
-            return "redirect:/empleado/login";
-        }
+    public String listarPedidos(@RequestParam(value="estado", required=false) EstadoPedido estado,
+                                HttpSession session, Model model) {
+        if (!addGlobalAttributes(session, model)) return "redirect:/empleado/login";
 
-        List<Pedido> pedidos;
-        if (estado != null && !estado.isBlank()) pedidos = pedidoRepository.findByEstado(estado);
-        else pedidos = pedidoRepository.findAll();
+        List<Pedido> pedidos = (estado != null)
+                ? pedidoRepository.findByEstado(estado)
+                : pedidoRepository.findAll();
+
         model.addAttribute("pedidos", pedidos);
-        return "empleado/pedidos-list";
+        model.addAttribute("estadoSeleccionado", estado);
+        return "empleado-pedido"; // vista de lista de pedidos
     }
 
     @GetMapping("/pedido/{id}")
-    public String detallePedido(@PathVariable Long id, HttpSession session, Model model) {
-        Empleado empleado = (Empleado) session.getAttribute("empleado");
-        if (empleado == null) {
-            return "redirect:/empleado/login";
-        }
+    public String verPedido(@PathVariable Long id, HttpSession session, Model model) {
+        if (!addGlobalAttributes(session, model)) return "redirect:/empleado/login";
 
-        Pedido pedido = pedidoRepository.findById(id).orElse(null);
-        if (pedido == null) return "redirect:/empleado/panel?errNotFound";
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
         model.addAttribute("pedido", pedido);
-        return "empleado/pedido-detalle";
+        return "pedido-detalle"; // vista detalle del pedido
     }
 
     @PostMapping("/pedido/{id}/estado")
-    public String actualizarEstado(@PathVariable Long id, @RequestParam String estado, HttpSession session) {
-        Empleado empleado = (Empleado) session.getAttribute("empleado");
-        if (empleado == null) {
-            return "redirect:/empleado/login";
-        }
+    public String cambiarEstado(@PathVariable Long id,
+                                @RequestParam EstadoPedido estado,
+                                HttpSession session) {
+        if (session.getAttribute("empleado") == null) return "redirect:/empleado/login";
 
-        pedidoRepository.findById(id).ifPresent(p -> {
-            p.setEstado(estado);
-            pedidoRepository.save(p);
-        });
-        return "redirect:/empleado/panel/pedido/" + id;
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+        pedido.setEstado(estado);
+        pedidoRepository.save(pedido);
+
+        // 🔔 Notificar por WebSocket a todos
+        messagingTemplate.convertAndSend("/topic/todos", pedido);
+
+        return "redirect:/empleado/panel/pedidos";
     }
 
-    // MÉTODOS PRIVADOS DE UTILIDAD
-    private boolean validarRol(HttpSession session, List<String> rolesPermitidos) {
+    // =====================================
+    // UTILIDADES / ESTADÍSTICAS
+    // =====================================
+
+    private boolean addGlobalAttributes(HttpSession session, Model model) {
         Empleado empleado = (Empleado) session.getAttribute("empleado");
         if (empleado == null) return false;
-        
-        return rolesPermitidos.stream()
+        model.addAttribute("username", empleado.getUsername());
+        model.addAttribute("rol", empleado.getRol().toUpperCase());
+        return true;
+    }
+
+    private boolean validarRol(HttpSession session, List<String> rolesPermitidos) {
+        Empleado empleado = (Empleado) session.getAttribute("empleado");
+        return empleado != null && rolesPermitidos.stream()
                 .anyMatch(rol -> rol.equalsIgnoreCase(empleado.getRol()));
     }
 
     private void agregarEstadisticasAdmin(Model model) {
-        // Estadísticas específicas para admin
-        // Puedes agregar total de empleados, productos, etc.
-        model.addAttribute("esAdmin", true);
+        LocalDate hoy = LocalDate.now();
+        LocalDateTime inicio = hoy.atStartOfDay();
+        LocalDateTime fin = hoy.atTime(23, 59, 59);
+
+        BigDecimal ventasHoy = pedidoRepository.sumTotalByFechaBetween(inicio, fin);
+        model.addAttribute("ventasHoy", ventasHoy != null ? ventasHoy : BigDecimal.ZERO);
+
+        YearMonth mesActual = YearMonth.now();
+        LocalDate inicioMes = mesActual.atDay(1);
+        LocalDate finMes = mesActual.atEndOfMonth();
+        BigDecimal ingresosMensuales = pedidoRepository.sumTotalByFechaBetween(inicioMes.atStartOfDay(), finMes.atTime(23, 59, 59));
+        model.addAttribute("ingresosMensuales", ingresosMensuales != null ? ingresosMensuales : BigDecimal.ZERO);
+
+        model.addAttribute("empleadosActivos", empleadoRepository.countByEstado("ACTIVO"));
+        model.addAttribute("productosStock", productoRepository.count());
+        model.addAttribute("ultimosUsuarios", empleadoRepository.findTop4ByOrderByFechaAltaDesc());
     }
 
     private void agregarEstadisticasCajero(Model model) {
-        // Estadísticas específicas para cajero
         LocalDate hoy = LocalDate.now();
-        BigDecimal ventasHoy = pedidoRepository.sumTotalByFechaBetween(hoy, hoy);
+        LocalDateTime inicio = hoy.atStartOfDay();
+        LocalDateTime fin = hoy.atTime(23, 59, 59);
+        BigDecimal ventasHoy = pedidoRepository.sumTotalByFechaBetween(inicio, fin);
         model.addAttribute("ventasHoy", ventasHoy != null ? ventasHoy : BigDecimal.ZERO);
     }
 
     private void agregarEstadisticasVendedor(Model model) {
-        // Estadísticas específicas para vendedor
         model.addAttribute("esVendedor", true);
     }
 }

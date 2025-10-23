@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Punto Fácil - Panel Administrador</title>
+
+  <!-- Bootstrap / Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link rel="icon" th:href="@{/images/logo.png}" href="/images/logo.png">
+  <link rel="stylesheet" th:href="@{/css/panel.css}" href="/css/panel.css">
+
+  <style>
+    .topbar { background-color: #2e3a59; }
+    .logo { height: 32px; }
+    .card { border-radius: 12px; border: none; }
+    .stat-icon { font-size: 1.6rem; }
+    .stat-blue { color: #0d6efd; }
+    .stat-green { color: #198754; }
+    .stat-yellow { color: #ffc107; }
+    .stat-red { color: #dc3545; }
+    .card-header h5 { font-weight: 600; }
+    footer { font-size: 0.9rem; background: #f8f9fa; border-top: 1px solid #e9ecef; }
+  </style>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg shadow-sm topbar">
+    <div class="container-fluid d-flex justify-content-between align-items-center px-3 px-md-4">
+      <div class="d-flex align-items-center gap-2">
+        <img th:src="@{/images/logo.png}" src="/images/logo.png" alt="Logo" class="logo">
+        <h5 class="m-0 fw-bold text-white">Punto Fácil</h5>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <a th:href="@{/empleado/panel/inicio}" class="btn btn-sm text-white">
+          <i class="fas fa-home me-1"></i>Inicio
+        </a>
+        <a th:href="@{/empleado/panel/pedidos}" class="btn btn-sm text-white">
+          <i class="fas fa-receipt me-1"></i>Pedidos
+        </a>
+        <a th:if="${rol=='ADMIN'}" th:href="@{/empleado/productos}" class="btn btn-sm text-white">
+          <i class="fas fa-tags me-1"></i>Productos
+        </a>
+        <a th:if="${rol=='ADMIN'}" th:href="@{/empleado/panel/ventas}" class="btn btn-sm text-white">
+          <i class="fas fa-ticket-alt me-1"></i>Ventas
+        </a>
+        <div class="text-white small ms-2 d-none d-md-block">
+          Bienvenido: <strong th:text="${username}">Usuario</strong> |
+          Rol: <strong th:text="${rol}">ADMIN</strong>
+        </div>
+        <a th:href="@{/empleado/logout}" class="btn btn-sm ms-1 text-white">
+          <i class="fas fa-sign-out-alt me-1"></i>Salir
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENIDO -->
+  <main class="container my-4 my-md-5 flex-grow-1">
+    <div class="content-wrapper">
+      <h1 class="mb-4 fw-bold"><i class="fas fa-tachometer-alt me-2"></i>Panel Administrador</h1>
+
+      <!-- KPIs -->
+      <div class="row g-3 g-md-4 mb-4">
+        <!-- Empleados activos -->
+        <div class="col-6 col-md-3">
+          <div class="card shadow-sm text-center p-2">
+            <div class="card-body">
+              <div class="stat-icon stat-blue mb-2"><i class="fas fa-users"></i></div>
+              <div class="small text-muted">Empleados activos</div>
+              <div class="h3 fw-bold" th:text="${empleadosActivos}">0</div>
+              <div class="badge bg-light text-dark">Actualizado</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ventas del día -->
+        <div class="col-6 col-md-3">
+          <div class="card shadow-sm text-center p-2">
+            <div class="card-body">
+              <div class="stat-icon stat-green mb-2"><i class="fas fa-cash-register"></i></div>
+              <div class="small text-muted">Ventas del día</div>
+              <div class="h3 fw-bold"
+                   th:text="${ventasHoy != null ? ' $' + #numbers.formatDecimal(ventasHoy, 0, 'POINT', 2, 'COMMA') : '$0,00'}">
+                $0,00
+              </div>
+              <a th:href="@{/empleado/panel/ventas}" class="badge bg-success text-white text-decoration-none">
+                Ver ventas
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Productos en stock -->
+        <div class="col-6 col-md-3">
+          <div class="card shadow-sm text-center p-2">
+            <div class="card-body">
+              <div class="stat-icon stat-yellow mb-2"><i class="fas fa-boxes"></i></div>
+              <div class="small text-muted">Productos en stock</div>
+              <div class="h3 fw-bold" th:text="${productosStock}">0</div>
+              <a th:href="@{/empleado/productos}" class="badge bg-warning text-dark text-decoration-none">
+                Ver inventario
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ingresos mensuales -->
+        <div class="col-6 col-md-3">
+          <div class="card shadow-sm text-center p-2">
+            <div class="card-body">
+              <div class="stat-icon stat-red mb-2"><i class="fas fa-chart-line"></i></div>
+              <div class="small text-muted">Ingresos mensuales</div>
+              <div class="h3 fw-bold"
+                   th:text="${ingresosMensuales != null ? ' $' + #numbers.formatDecimal(ingresosMensuales, 0, 'POINT', 2, 'COMMA') : '$0,00'}">
+                $0,00
+              </div>
+              <div class="badge bg-light text-dark">Actualizado</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Últimos usuarios -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+          <h5 class="m-0"><i class="fas fa-user-clock me-2"></i>Últimos usuarios registrados</h5>
+          <a th:href="@{/empleado/panel/empleados}" class="btn btn-outline-primary btn-sm">Ver todos</a>
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-hover m-0">
+            <thead class="table-light">
+              <tr><th>#</th><th>Nombre</th><th>Rol</th><th>Fecha de alta</th><th>Estado</th></tr>
+            </thead>
+            <tbody>
+              <tr th:each="u, iterStat : ${ultimosUsuarios}">
+                <td th:text="${iterStat.count}">1</td>
+                <td th:text="${u.username}">Nombre</td>
+                <td th:text="${u.rol}">ROL</td>
+                <td th:text="${#temporals.format(u.fechaAlta, 'dd/MM/yyyy')}">01/01/2025</td>
+                <td>
+                  <span class="badge"
+                        th:classappend="${u.estado == 'ACTIVO'} ? 'bg-success' :
+                                        (${u.estado == 'PENDIENTE'} ? 'bg-warning text-dark' : 'bg-danger')"
+                        th:text="${u.estado}">Activo</span>
+                </td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(ultimosUsuarios)}">
+                <td colspan="5" class="text-center text-muted">No hay usuarios recientes.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Reportes -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+          <h5 class="m-0"><i class="fas fa-file-alt me-2"></i>Reportes del sistema</h5>
+          <a th:href="@{/reportes/ventas}" class="btn btn-primary btn-sm">Ver reportes</a>
+        </div>
+        <div class="card-body">
+          <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Ventas por día (mes actual)
+              <a th:href="@{/reportes/ventas}" class="badge bg-primary rounded-pill text-decoration-none">Descargar</a>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Actividad de empleados
+              <a th:href="@{/reportes/empleados}" class="badge bg-primary rounded-pill text-decoration-none">Descargar</a>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Inventario general
+              <a th:href="@{/reportes/inventario}" class="badge bg-primary rounded-pill text-decoration-none">Descargar</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="text-center py-3 mt-auto">© 2025 Punto Fácil. Todos los derechos reservados.</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

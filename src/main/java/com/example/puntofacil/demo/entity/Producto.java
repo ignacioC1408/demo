@@ -32,14 +32,14 @@ public class Producto {
 
     @Column(name = "unidad_medida", length = 10)
     private String unidadMedida; // "UNIDAD", "KG", "GR", "LT", "ML"
-
+    
     @Column(precision = 10, scale = 3)
     private BigDecimal stock;
 
     // ✅ NUEVO CAMPO AGREGADO - con valor por defecto para no romper datos existentes
     @Column(name = "categoria_id")
     private Long categoriaId = 1L; // Valor por defecto
-
+    
     public Producto() {}
 
     public Producto(Integer codigoProducto, String nombre, String codigoBarra,

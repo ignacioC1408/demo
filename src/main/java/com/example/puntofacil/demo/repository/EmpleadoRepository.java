@@ -1,5 +1,6 @@
 package com.example.puntofacil.demo.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,9 @@ public interface EmpleadoRepository extends JpaRepository<Empleado, Long> {
 
     // 🔹 Busca un empleado por token de recuperación
     Optional<Empleado> findByTokenRecuperacion(String token);
+
+    long countByEstado(String estado);
+
+    List<Empleado> findTop4ByOrderByFechaAltaDesc();
+
 }

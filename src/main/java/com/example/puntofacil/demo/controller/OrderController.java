@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.puntofacil.demo.entity.DetallePedido;
+import com.example.puntofacil.demo.entity.EstadoPedido;
 import com.example.puntofacil.demo.entity.Pedido;
 import com.example.puntofacil.demo.entity.Producto;
 import com.example.puntofacil.demo.entity.Usuario;
@@ -96,7 +97,7 @@ public class OrderController {
         // crear pedido
         Pedido pedido = new Pedido();
         pedido.setUsuario(usuarioRepository.findById(usuario.getId()).orElse(null));
-        pedido.setEstado("PENDIENTE");
+        pedido.setEstado(EstadoPedido.PENDIENTE);
         pedido.setTotal(total);
         String codigo = generateUniqueCodigoRetiro();
         pedido.setCodigoRetiro(codigo);

@@ -8,12 +8,15 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -34,8 +37,9 @@ public class Pedido {
     @Column(nullable = false)
     private BigDecimal total;
 
-    @Column(length = 50)
-    private String estado;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 50, nullable = false)
+    private EstadoPedido estado;
 
     @Column(unique = true, length = 10)
     private String codigoRetiro;
@@ -46,10 +50,14 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetallePedido> detalles = new ArrayList<>();
 
-    // ===== CONSTRUCTORES =====
-    public Pedido() {
-        this.fecha = LocalDateTime.now();
-        this.estado = "PENDIENTE";
+    @PrePersist
+    public void prePersist() {
+        if (this.fecha == null) {
+            this.fecha = LocalDateTime.now();
+        }
+        if (this.estado == null) {
+            this.estado = EstadoPedido.PENDIENTE;
+        }
     }
 
     // ===== GETTERS & SETTERS =====
@@ -86,12 +94,13 @@ public class Pedido {
         this.total = total;
     }
 
-    public String getEstado() {
-        return estado;
+    
+    public EstadoPedido getEstado() { 
+        return estado; 
     }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
+    
+    public void setEstado(EstadoPedido estado) { 
+        this.estado = estado; 
     }
 
     public String getCodigoRetiro() {

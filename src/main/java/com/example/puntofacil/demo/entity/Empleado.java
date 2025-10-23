@@ -1,5 +1,7 @@
 package com.example.puntofacil.demo.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,10 +29,33 @@ public class Empleado {
 
     @Column(name = "token_recuperacion")
     private String tokenRecuperacion; // para reset de contraseña
+    
+    @Column(nullable = false)
+    private String estado = "ACTIVO"; // ACTIVO, PENDIENTE, SUSPENDIDO, etc.
+
+    @Column(name = "fecha_alta")
+    private LocalDateTime fechaAlta = LocalDateTime.now(); // se setea al crear
 
     // =====================
     // Getters y setters
     // =====================
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public LocalDateTime getFechaAlta() {
+        return fechaAlta;
+    }
+
+    public void setFechaAlta(LocalDateTime fechaAlta) {
+        this.fechaAlta = fechaAlta;
+    }
+
     public Long getId() {
         return id;
     }
