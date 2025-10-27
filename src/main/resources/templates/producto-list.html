@@ -11,46 +11,45 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-light shadow-sm topbar">
-        <div class="container-fluid d-flex justify-content-between align-items-center px-4">
-            <div class="d-flex align-items-center">
-                <img th:src="@{/images/logo.png}" src="/images/logo.png" alt="Logo" class="logo me-2">
-                <h5 class="m-0 fw-bold text-white">Punto Fácil</h5>
-            </div>
-            
-            <div class="d-flex align-items-center gap-3">
-                <a th:href="@{/empleado/panel/inicio}" class="btn btn-outline-light btn-sm">
-                    <i class="fas fa-home me-1"></i><span>Inicio</span>
-                </a>
-                
-                <a th:if="${rol == 'CAJERO' or rol == 'ADMIN'}" 
-                   th:href="@{/empleado/panel/ventas}" class="btn btn-outline-light btn-sm">
-                    <i class="fas fa-shopping-cart me-1"></i><span>Ventas</span>
-                </a>
-                
-                <a th:if="${rol == 'VENDEDOR' or rol == 'ADMIN'}" 
-                   th:href="@{/empleado/panel/stock}" class="btn btn-outline-light btn-sm">
-                    <i class="fas fa-boxes me-1"></i><span>Stock</span>
-                </a>
-                
-                <a th:if="${rol == 'ADMIN'}" 
-                   th:href="@{/empleado/panel/productos}" class="btn btn-outline-light btn-sm active">
-                    <i class="fas fa-tags me-1"></i><span>Productos</span>
-                </a>
-                
-                <div class="text-white ms-3 small">
-                    Bienvenido: <strong th:text="${username}">Administrador</strong> |
-                    Rol: <strong th:text="${rol}">ADMIN</strong>
-                </div>
-
-                <a th:href="@{/empleado/logout}" class="btn btn-outline-light btn-sm ms-2">
-                    <i class="fas fa-sign-out-alt me-1"></i><span>Salir</span>
-                </a>
-            </div>
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg shadow-sm topbar">
+    <div class="container-fluid d-flex justify-content-between align-items-center px-3 px-md-4">
+        <div class="d-flex align-items-center gap-2">
+            <img th:src="@{/images/logo.png}" src="/images/logo.png" alt="Logo" class="logo">
+            <h5 class="m-0 fw-bold text-white">Punto Fácil</h5>
         </div>
-    </nav>
+
+        <div class="d-flex align-items-center gap-2">
+            <!-- Ventas -->
+            <a th:if="${rol=='ADMIN' or rol=='CAJERO' or rol=='VENDEDOR'}" th:href="@{/empleado/panel/ventas}"
+                class="btn btn-sm text-white">
+                <i class="fas fa-ticket-alt me-1"></i>Ventas
+            </a>
+
+            <!-- Productos (visible para todos los roles) -->
+            <a th:href="@{/empleado/productos}"
+                class="btn btn-sm text-white fw-bold border-bottom border-2 border-light">
+                <i class="fas fa-tags me-1"></i>Productos
+            </a>
+
+            <!-- Pedidos -->
+            <a th:if="${rol=='ADMIN'}" th:href="@{/empleado/panel/pedidos}" class="btn btn-sm text-white">
+                <i class="fas fa-receipt me-1"></i>Pedidos
+            </a>
+
+            <!-- Nombre / Rol -->
+            <div class="text-white small ms-2 d-none d-md-block">
+                Bienvenido: <strong th:text="${username}">Usuario</strong> |
+                Rol: <strong th:text="${rol}">ADMIN</strong>
+            </div>
+
+            <!-- Salir -->
+            <a th:href="@{/empleado/logout}" class="btn btn-sm ms-1 text-white">
+                <i class="fas fa-sign-out-alt me-1"></i>Salir
+            </a>
+        </div>
+    </div>
+</nav>
 
     <!-- CONTENIDO CENTRAL -->
     <main class="container my-5 flex-grow-1">

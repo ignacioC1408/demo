@@ -8,6 +8,7 @@ body {
     margin: 0;
 }
 
+/* ---- Tarjeta principal del login ---- */
 .login-card {
     background: #fff;
     color: #333;
@@ -18,6 +19,24 @@ body {
     text-align: center;
 }
 
+/* ---- NUEVA TARJETA: Registro ---- */
+.register-card {
+    background: #fff;
+    color: #333;
+    width: 420px;
+    padding: 45px 35px;
+    border-radius: 18px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.register-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+}
+
+/* ---- Elementos comunes ---- */
 img {
     width: 100px;
     margin-bottom: 20px;
@@ -33,8 +52,16 @@ h3 {
     border-radius: 8px;
     padding: 12px;
     margin-bottom: 15px;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+.form-control:focus {
+    border-color: #2a5298;
+    box-shadow: 0 0 5px rgba(42, 82, 152, 0.3);
+}
+
+/* ---- Botones ---- */
 .btn-primary {
     background-color: #007bff;
     border: none;
@@ -47,12 +74,40 @@ h3 {
     background-color: #0056b3;
 }
 
+/* ---- Mensajes ---- */
 .error-msg {
     color: red;
     margin-top: 10px;
     font-size: 14px;
 }
 
+.success-msg {
+    color: green;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+/* ---- Texto de redirección ---- */
+p {
+    margin-top: 25px;
+    font-size: 16px;              /* Aumentado de 14px a 16px */
+    color: #333;
+}
+
+p a {
+    color: #2a5298;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;              /* Mantiene consistencia con el texto */
+    transition: color 0.3s ease;
+}
+
+p a:hover {
+    text-decoration: underline;
+    color: #1a3e7a;
+}
+
+/* ---- Footer opcional ---- */
 footer {
     margin-top: 25px;
     font-size: 13px;

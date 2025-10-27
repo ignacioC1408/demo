@@ -17,20 +17,16 @@ public class Cliente {
 
     @Column(name = "nombre_comercio", nullable = false)
     private String nombreComercio;
-
-    @Column
-    private String direccion;
-
-    @Column
+    
+    @Column(name = "email")
     private String email;
-
-    @Column
+    
+    @Column(name = "telefono")
     private String telefono;
 
-    // ❌ ELIMINAR esta relación si no la necesitas
-    // @OneToMany(mappedBy = "cliente")
-    // private List<Empleado> empleados;
-
+    @Column(name = "direccion")
+    private String direccion;
+    
     // ==================
     // GETTERS y SETTERS
     // ==================
@@ -74,13 +70,4 @@ public class Cliente {
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
-
-    // ❌ ELIMINAR estos getters/setters también
-    // public List<Empleado> getEmpleados() {
-    //     return empleados;
-    // }
-
-    // public void setEmpleados(List<Empleado> empleados) {
-    //     this.empleados = empleados;
-    // }
 }
