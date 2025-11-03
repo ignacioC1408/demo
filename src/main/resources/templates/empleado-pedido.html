@@ -4,27 +4,67 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Pedidos - Punto Fácil</title>
+
+  <!-- Bootstrap / Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link rel="icon" th:href="@{/images/logo.png}" href="/images/logo.png">
+  <link rel="stylesheet" th:href="@{/css/pedidos.css}" href="/css/pedidos.css">
 </head>
+
 <body class="d-flex flex-column min-vh-100">
 
+  <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg shadow-sm topbar">
-    <div class="container-fluid px-3">
-      <a th:href="@{/empleado/panel/inicio}" class="btn btn-sm">Inicio</a>
-      <div class="ms-auto d-flex gap-2">
-        <a th:href="@{/empleado/panel/pedidos}" class="btn btn-sm">Pedidos</a>
-        <a th:href="@{/empleado/panel/productos}" class="btn btn-sm">Productos</a>
-        <a th:href="@{/config/pagos}" class="btn btn-sm">Pasarelas</a>
+    <div class="container-fluid px-3 px-md-4 d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-2">
+        <img th:src="@{/images/logo.png}" src="/images/logo.png" alt="Logo" class="logo">
+        <h5 class="m-0 fw-bold text-white">Punto Fácil</h5>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <!-- Inicio -->
+        <a th:href="@{/empleado/panel/inicio}" class="btn btn-sm">
+          <i class="fas fa-home me-1"></i><span>Inicio</span>
+        </a>
+
+        <!-- Pedidos -->
+        <a th:href="@{/empleado/panel/pedidos}" class="btn btn-sm active">
+          <i class="fas fa-receipt me-1"></i><span>Pedidos</span>
+        </a>
+
+        <!-- Productos -->
+        <a th:if="${rol == 'ADMIN' or rol == 'VENDEDOR'}" th:href="@{/empleado/productos}" class="btn btn-sm">
+          <i class="fas fa-tags me-1"></i><span>Productos</span>
+        </a>
+
+        <!-- Ventas -->
+        <a th:if="${rol == 'ADMIN' or rol == 'CAJERO'}" th:href="@{/empleado/panel/ventas}" class="btn btn-sm">
+          <i class="fas fa-cash-register me-1"></i><span>Ventas</span>
+        </a>
+
+        <!-- Usuario -->
+        <div class="text-white small ms-2 d-none d-md-block">
+          Bienvenido: <strong th:text="${username}">Usuario</strong> |
+          Rol: <strong th:text="${rol}">ROL</strong>
+        </div>
+
+        <!-- Salir -->
+        <a th:href="@{/empleado/logout}" class="btn btn-sm text-white ms-1">
+          <i class="fas fa-sign-out-alt me-1"></i><span>Salir</span>
+        </a>
       </div>
     </div>
   </nav>
 
+  <!-- CONTENIDO -->
   <main class="container my-4 flex-grow-1">
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h2 class="m-0">Pedidos</h2>
+      <h2 class="page-title"><i class="fas fa-box me-2"></i>Pedidos</h2>
+
+      <!-- FILTRO -->
       <form class="d-flex" method="get" th:action="@{/empleado/panel/pedidos}">
-        <select name="estado" class="form-select me-2">
+        <select name="estado" class="form-select form-select-sm me-2">
           <option value="">Todos</option>
           <option>PENDIENTE</option>
           <option>EN_PREPARACION</option>
@@ -32,74 +72,89 @@
           <option>PAGADO</option>
           <option>CANCELADO</option>
         </select>
-        <button class="btn btn-primary">Filtrar</button>
+        <button class="btn btn-primary btn-sm"><i class="fas fa-filter me-1"></i>Filtrar</button>
       </form>
     </div>
 
-    <div class="card shadow-sm">
-      <div class="table-responsive">
-        <table class="table align-middle mb-0">
-          <thead class="table-light">
-            <tr>
-              <th>#</th><th>Cliente</th><th>Fecha</th><th>Total</th><th>Estado</th><th class="text-end">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="p : ${pedidos}">
-              <td th:text="${p.id}">1</td>
-              <td th:text="${p.clienteNombre}">Juan Pérez</td>
-              <td th:text="${#temporals.format(p.fecha,'dd/MM/yyyy HH:mm')}">22/10/2025 10:45</td>
-              <td th:text="${'$ ' + #numbers.formatDecimal(p.total, 0, 'POINT', 2, 'COMMA')}">$1.250,00</td>
-              <td><span class="pill" th:classappend="' estado-' + ${p.estado}" th:text="${p.estado}">PENDIENTE</span></td>
-              <td class="text-end">
-                <a class="btn btn-sm btn-outline-secondary" th:href="@{|/empleado/panel/pedido/${p.id}|}">
-                  <i class="fa fa-eye me-1"></i>Ver
-                </a>
+    <div class="table-container shadow-sm">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Cliente</th>
+            <th>Fecha</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="p : ${pedidos}">
+            <td th:text="${p.id}">1</td>
+            <td th:text="${p.clienteNombre}">Juan Pérez</td>
+            <td th:text="${#temporals.format(p.fecha,'dd/MM/yyyy HH:mm')}">22/10/2025 10:45</td>
+            <td th:text="${'$ ' + #numbers.formatDecimal(p.total, 0, 'POINT', 2, 'COMMA')}">$1.250,00</td>
+            <td>
+              <span class="stock-badge" th:classappend="${p.estado == 'PENDIENTE'} ? ' low' :
+                                                        (${p.estado == 'EN_PREPARACION'} ? ' normal' :
+                                                        (${p.estado == 'LISTO'} ? ' normal' :
+                                                        (${p.estado == 'PAGADO'} ? ' normal' : 'empty')))}"
+                    th:text="${p.estado}">PENDIENTE</span>
+            </td>
+            <td class="text-end action-buttons">
+              <a class="btn-action btn-edit" th:href="@{|/empleado/panel/pedido/${p.id}|}">
+                <i class="fa fa-eye me-1"></i>Ver
+              </a>
 
-                <!-- Acciones de estado -->
-                <form class="d-inline" th:action="@{|/empleado/panel/pedido/${p.id}/estado|}" method="post">
-                  <input type="hidden" name="estado" value="RECIBIDO">
-                  <button class="btn btn-sm btn-outline-primary">Recibir</button>
-                </form>
-                
-                <form class="d-inline" th:action="@{|/empleado/panel/pedido/${p.id}/estado|}" method="post">
-                  <input type="hidden" name="estado" value="CONFIRMADO">
-                  <button class="btn btn-sm btn-outline-success">Confirmar</button>
-                </form>
-                <form class="d-inline" th:action="@{|/empleado/panel/pedido/${p.id}/estado|}" method="post">
-                  <input type="hidden" name="estado" value="EN_PREPARACION">
-                  <button class="btn btn-sm btn-outline-warning">Preparar</button>
-                </form>
-              </td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(pedidos)}">
-              <td colspan="6" class="text-center text-muted py-4">No hay pedidos para el criterio seleccionado.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+              <form th:if="${rol == 'CAJERO' or rol == 'ADMIN'}" th:action="@{|/empleado/panel/pedido/${p.id}/estado|}" method="post">
+                <input type="hidden" name="estado" value="RECIBIDO">
+                <button class="btn-action btn-primary">Recibir</button>
+              </form>
+
+              <form th:if="${rol == 'VENDEDOR' or rol == 'ADMIN'}" th:action="@{|/empleado/panel/pedido/${p.id}/estado|}" method="post">
+                <input type="hidden" name="estado" value="CONFIRMADO">
+                <button class="btn-action btn-edit">Confirmar</button>
+              </form>
+
+              <form th:if="${rol == 'VENDEDOR' or rol == 'ADMIN'}" th:action="@{|/empleado/panel/pedido/${p.id}/estado|}" method="post">
+                <input type="hidden" name="estado" value="EN_PREPARACION">
+                <button class="btn-action btn-warning">Preparar</button>
+              </form>
+            </td>
+          </tr>
+
+          <!-- Sin resultados -->
+          <tr th:if="${#lists.isEmpty(pedidos)}" class="empty-state">
+            <td colspan="6">
+              <div class="empty-content">
+                <i class="fas fa-box-open empty-icon"></i>
+                <h3>No hay pedidos</h3>
+                <p>No se encontraron pedidos para el criterio seleccionado.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </main>
 
-  <footer class="text-center py-3 bg-white">© 2025 Punto Fácil</footer>
+  <footer>© 2025 Punto Fácil. Todos los derechos reservados.</footer>
+
+  <!-- SCRIPTS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>  
   <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 
-<script>
-  const socket = new SockJS('/ws');
-  const stompClient = Stomp.over(socket);
-
-  stompClient.connect({}, () => {
-    stompClient.subscribe('/topic/todos', mensaje => {
-      const pedido = JSON.parse(mensaje.body);
-      console.log("📦 Pedido actualizado:", pedido);
-      location.reload(); // refresca tabla
+  <script>
+    const socket = new SockJS('/ws');
+    const stompClient = Stomp.over(socket);
+    stompClient.connect({}, () => {
+      stompClient.subscribe('/topic/todos', mensaje => {
+        const pedido = JSON.parse(mensaje.body);
+        console.log("📦 Pedido actualizado:", pedido);
+        location.reload();
+      });
     });
-  });
-</script>
-
-
-
+  </script>
 </body>
 </html>

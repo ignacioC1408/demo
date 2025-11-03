@@ -29,42 +29,41 @@
 
   <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg shadow-sm topbar">
-  <div class="container-fluid d-flex justify-content-between align-items-center px-3 px-md-4">
-    <div class="d-flex align-items-center gap-2">
-      <img th:src="@{/images/logo.png}" src="/images/logo.png" alt="Logo" class="logo">
-      <h5 class="m-0 fw-bold text-white">Punto Fácil</h5>
-    </div>
-
-    <div class="d-flex align-items-center gap-2">
-      <!-- Ventas -->
-      <a th:if="${rol=='ADMIN'}" th:href="@{/empleado/panel/ventas}" class="btn btn-sm text-white">
-        <i class="fas fa-ticket-alt me-1"></i>Ventas
-      </a>
-
-      <!-- Productos -->
-      <a th:if="${rol=='ADMIN'}" th:href="@{/empleado/productos}" class="btn btn-sm text-white">
-        <i class="fas fa-tags me-1"></i>Productos
-      </a>
-
-      <!-- Pedidos -->
-      <a th:href="@{/empleado/panel/pedidos}" class="btn btn-sm text-white">
-        <i class="fas fa-receipt me-1"></i>Pedidos
-      </a>
-
-      <!-- Nombre / Rol -->
-      <div class="text-white small ms-2 d-none d-md-block">
-        Bienvenido: <strong th:text="${username}">Usuario</strong> |
-        Rol: <strong th:text="${rol}">ADMIN</strong>
+    <div class="container-fluid d-flex justify-content-between align-items-center px-3 px-md-4">
+      <div class="d-flex align-items-center gap-2">
+        <img th:src="@{/images/logo.png}" src="/images/logo.png" alt="Logo" class="logo">
+        <h5 class="m-0 fw-bold text-white">Punto Fácil</h5>
       </div>
 
-      <!-- Salir -->
-      <a th:href="@{/empleado/logout}" class="btn btn-sm ms-1 text-white">
-        <i class="fas fa-sign-out-alt me-1"></i>Salir
-      </a>
-    </div>
-  </div>
-</nav>
+      <div class="d-flex align-items-center gap-2">
+        <!-- Ventas -->
+        <a th:if="${rol=='ADMIN'}" th:href="@{/empleado/panel/ventas}" class="btn btn-sm text-white">
+          <i class="fas fa-cash-register me-1"></i>Ventas
+        </a>
 
+        <!-- Productos -->
+        <a th:if="${rol=='ADMIN'}" th:href="@{/empleado/productos}" class="btn btn-sm text-white">
+          <i class="fas fa-tags me-1"></i>Productos
+        </a>
+
+        <!-- Pedidos -->
+        <a th:href="@{/empleado/panel/pedidos}" class="btn btn-sm text-white">
+          <i class="fas fa-receipt me-1"></i>Pedidos
+        </a>
+
+        <!-- Nombre / Rol -->
+        <div class="text-white small ms-2 d-none d-md-block">
+          Bienvenido: <strong th:text="${username}">Usuario</strong> |
+          Rol: <strong th:text="${rol}">ADMIN</strong>
+        </div>
+
+        <!-- Salir -->
+        <a th:href="@{/empleado/logout}" class="btn btn-sm ms-1 text-white">
+          <i class="fas fa-sign-out-alt me-1"></i>Salir
+        </a>
+      </div>
+    </div>
+  </nav>
 
   <!-- CONTENIDO -->
   <main class="container my-4 my-md-5 flex-grow-1">
@@ -73,7 +72,6 @@
 
       <!-- KPIs -->
       <div class="row g-3 g-md-4 mb-4">
-        <!-- Empleados activos -->
         <div class="col-6 col-md-3">
           <div class="card shadow-sm text-center p-2">
             <div class="card-body">
@@ -85,7 +83,6 @@
           </div>
         </div>
 
-        <!-- Ventas del día -->
         <div class="col-6 col-md-3">
           <div class="card shadow-sm text-center p-2">
             <div class="card-body">
@@ -102,7 +99,6 @@
           </div>
         </div>
 
-        <!-- Productos en stock -->
         <div class="col-6 col-md-3">
           <div class="card shadow-sm text-center p-2">
             <div class="card-body">
@@ -116,7 +112,6 @@
           </div>
         </div>
 
-        <!-- Ingresos mensuales -->
         <div class="col-6 col-md-3">
           <div class="card shadow-sm text-center p-2">
             <div class="card-body">
@@ -132,10 +127,10 @@
         </div>
       </div>
 
-      <!-- Últimos usuarios -->
+      <!-- Últimos empleados -->
       <div class="card shadow-sm mb-4">
         <div class="card-header bg-light d-flex justify-content-between align-items-center">
-          <h5 class="m-0"><i class="fas fa-user-clock me-2"></i>Últimos usuarios registrados</h5>
+          <h5 class="m-0"><i class="fas fa-user-clock me-2"></i>Últimos Empleados registrados</h5>
           <a th:href="@{/empleado/panel/empleados}" class="btn btn-outline-primary btn-sm">Ver todos</a>
         </div>
         <div class="card-body p-0">
@@ -168,21 +163,17 @@
       <div class="card shadow-sm">
         <div class="card-header bg-light d-flex justify-content-between align-items-center">
           <h5 class="m-0"><i class="fas fa-file-alt me-2"></i>Reportes del sistema</h5>
-          <a th:href="@{/reportes/ventas}" class="btn btn-primary btn-sm">Ver reportes</a>
+          <a th:href="@{/empleado/panel/ventas}" class="btn btn-primary btn-sm">Ver Ventas</a>
         </div>
         <div class="card-body">
           <ul class="list-group">
             <li class="list-group-item d-flex justify-content-between align-items-center">
               Ventas por día (mes actual)
-              <a th:href="@{/reportes/ventas}" class="badge bg-primary rounded-pill text-decoration-none">Descargar</a>
+              <a th:href="@{empleado/panel/ventas}" class="badge bg-primary rounded-pill text-decoration-none">Descargar</a>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              Actividad de empleados
-              <a th:href="@{/reportes/empleados}" class="badge bg-primary rounded-pill text-decoration-none">Descargar</a>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              Inventario general
-              <a th:href="@{/reportes/inventario}" class="badge bg-primary rounded-pill text-decoration-none">Descargar</a>
+              Ventas por mes (año actual)
+              <a th:href="@{/empleado/panel/ventas}" class="badge bg-primary rounded-pill text-decoration-none">Descargar</a>
             </li>
           </ul>
         </div>
@@ -192,6 +183,46 @@
 
   <footer class="text-center py-3 mt-auto">© 2025 Punto Fácil. Todos los derechos reservados.</footer>
 
+  <!-- MODAL: ALERTA DE STOCK BAJO -->
+  <div class="modal fade" id="stockBajoModal" tabindex="-1" aria-labelledby="stockBajoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-warning text-dark">
+          <h5 class="modal-title" id="stockBajoLabel">
+            <i class="fas fa-exclamation-triangle me-2"></i>Stock Bajo
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          Algunos productos tienen poco stock:
+          <ul>
+            <li th:each="p : ${productosBajoStock}" th:text="${p.nombre + ' (Stock: ' + p.stock + ')'}">
+              Lavandina (Stock: 2)
+            </li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <a th:href="@{/empleado/productos}" class="btn btn-sm btn-warning text-dark">
+            <i class="fas fa-boxes me-1"></i> Ver inventario
+          </a>
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- SCRIPT: MOSTRAR MODAL SI HAY STOCK BAJO -->
+  <script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+      const hayStockBajo = /*[[${!#lists.isEmpty(productosBajoStock)}]]*/ false;
+      if (hayStockBajo) {
+        const modal = new bootstrap.Modal(document.getElementById('stockBajoModal'));
+        modal.show();
+      }
+    });
+  </script>
 </body>
 </html>

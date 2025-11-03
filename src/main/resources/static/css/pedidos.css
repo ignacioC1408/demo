@@ -1,0 +1,169 @@
+:root {
+  --primary-blue: #2980b9;
+  --light-blue: #6dd5fa;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --text-dark: #333;
+  --text-light: #6c757d;
+  --border-color: #e9ecef;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #a8edea, #fed6e3);
+  min-height: 100vh;
+}
+
+/* NAVBAR */
+.topbar {
+  background: linear-gradient(90deg, var(--primary-blue), var(--light-blue)) !important;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.logo {
+  height: 40px;
+}
+
+.topbar .btn {
+  color: white !important;
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.topbar .btn:hover {
+  background-color: rgba(255,255,255,0.2);
+  transform: translateY(-1px);
+}
+
+.topbar .btn.active {
+  background-color: rgba(255,255,255,0.25);
+  font-weight: 600;
+  border-color: rgba(255,255,255,0.5);
+}
+
+/* CONTENIDO */
+.container {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  margin: 2rem auto;
+  max-width: 1200px;
+}
+
+.page-title {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+/* TABLA */
+.table-container {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  background-color: #2a5298;
+  color: white;
+  padding: 1rem;
+  font-weight: 600;
+}
+
+.data-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.data-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* ESTADOS */
+.stock-badge {
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.stock-badge.low { background-color: var(--warning-color); color: #000; }
+.stock-badge.normal { background-color: var(--success-color); color: white; }
+.stock-badge.empty { background-color: var(--danger-color); color: white; }
+
+/* BOTONES */
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  justify-content: flex-end;
+}
+
+.btn-action {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-edit {
+  background-color: var(--primary-blue);
+  color: white;
+}
+
+.btn-edit:hover {
+  background-color: #1a5a8a;
+}
+
+.btn-warning {
+  background-color: var(--warning-color);
+  color: #000;
+}
+
+.btn-primary {
+  background-color: var(--primary-blue);
+  color: white;
+}
+
+/* SIN RESULTADOS */
+.empty-state {
+  text-align: center;
+  padding: 3rem !important;
+}
+
+.empty-icon {
+  font-size: 2.5rem;
+  opacity: 0.5;
+  margin-bottom: 1rem;
+}
+
+.empty-content h3 {
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 1rem;
+  color: var(--text-light);
+  background: rgba(255,255,255,0.8);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  .action-buttons { flex-direction: column; align-items: stretch; }
+}

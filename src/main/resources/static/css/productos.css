@@ -28,42 +28,47 @@ body {
     background: linear-gradient(90deg, var(--primary-blue), var(--light-blue));
     padding: 0.75rem 1rem;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .navbar-brand {
-    font-weight: 600;
-    font-size: 1.5rem;
-    color: white !important;
-    text-decoration: none;
-}
-
-.navbar-brand:hover {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     color: white;
     text-decoration: none;
 }
 
-.nav-links {
-    display: flex;
-    gap: 1rem;
-    margin-left: 2rem;
+.logo {
+    height: 45px;
+    width: auto;
+    object-fit: contain;
 }
 
-.nav-links a {
-    color: white !important;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
+.navbar-brand h5 {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: white;
+}
+
+.navbar .btn {
+    border: 1px solid rgba(255,255,255,0.3);
     border-radius: 6px;
+    color: white !important;
     transition: all 0.3s ease;
+    text-decoration: none;
     font-weight: 500;
 }
 
-.nav-links a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+.navbar .btn:hover {
+    background-color: rgba(255,255,255,0.2);
     transform: translateY(-1px);
 }
 
-.nav-links a.active {
-    background-color: rgba(255, 255, 255, 0.25);
+.navbar .btn.active {
+    background-color: rgba(255,255,255,0.25);
     font-weight: 600;
 }
 
@@ -77,33 +82,80 @@ body {
     max-width: 1200px;
 }
 
-.page-title {
+.page-header {
+    background: none;
+    text-align: center;
+    padding: 1.5rem 0;
+}
+
+.page-header h1 {
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.page-header p {
+    color: var(--text-light);
+    margin-top: 0.5rem;
+}
+
+/* === FORMULARIO DE PRODUCTOS === */
+.product-form label {
     color: var(--text-dark);
     font-weight: 600;
-    margin: 0;
 }
 
-/* === BOTÓN NUEVO PRODUCTO === */
-.btn-new {
+.product-form .form-control,
+.product-form .form-select {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-form .form-control:focus,
+.product-form .form-select:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 2px rgba(41,128,185,0.2);
+    outline: none;
+}
+
+.product-form small {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+}
+
+.btn-cancel,
+.btn-submit {
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.6rem 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel {
+    background-color: #ddd;
+    color: var(--text-dark);
+}
+
+.btn-cancel:hover {
+    background-color: #bbb;
+    color: #222;
+}
+
+.btn-submit {
     background-color: var(--primary-blue);
     color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.3s ease;
-    border: none;
 }
 
-.btn-new:hover {
+.btn-submit:hover {
     background-color: #1a5a8a;
-    color: white;
-    text-decoration: none;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(41, 128, 185, 0.3);
 }
 
 /* === TABLA DE PRODUCTOS === */
@@ -125,7 +177,6 @@ body {
     padding: 1rem;
     text-align: left;
     font-weight: 600;
-    border-bottom: 2px solid var(--border-color);
 }
 
 .products-table td {
@@ -138,13 +189,8 @@ body {
 }
 
 /* === ESTADOS DE STOCK === */
-.stock-empty {
-    background-color: #fff5f5 !important;
-}
-
-.stock-low {
-    background-color: #fffbf0 !important;
-}
+.stock-empty { background-color: #fff5f5 !important; }
+.stock-low { background-color: #fffbf0 !important; }
 
 .stock-badge {
     padding: 0.25rem 0.5rem;
@@ -153,20 +199,9 @@ body {
     font-size: 0.875rem;
 }
 
-.stock-badge.empty {
-    background-color: var(--danger-color);
-    color: white;
-}
-
-.stock-badge.low {
-    background-color: var(--warning-color);
-    color: var(--text-dark);
-}
-
-.stock-badge.normal {
-    background-color: var(--success-color);
-    color: white;
-}
+.stock-badge.empty { background-color: var(--danger-color); color: white; }
+.stock-badge.low { background-color: var(--warning-color); color: var(--text-dark); }
+.stock-badge.normal { background-color: var(--success-color); color: white; }
 
 /* === BOTONES DE ACCIÓN === */
 .action-buttons {
@@ -192,8 +227,6 @@ body {
 
 .btn-edit:hover {
     background-color: #218838;
-    color: white;
-    text-decoration: none;
 }
 
 .btn-delete {
@@ -203,17 +236,12 @@ body {
 
 .btn-delete:hover {
     background-color: #c82333;
-    color: white;
 }
 
 /* === ESTADO VACÍO === */
 .empty-state {
     text-align: center;
     padding: 3rem !important;
-}
-
-.empty-content {
-    color: var(--text-light);
 }
 
 .empty-icon {
@@ -228,7 +256,7 @@ body {
 }
 
 .empty-content p {
-    margin-bottom: 1.5rem;
+    color: var(--text-light);
 }
 
 /* === FOOTER === */
@@ -237,55 +265,34 @@ body {
     padding: 1.5rem;
     color: var(--text-light);
     font-size: 0.875rem;
+    background: rgba(255,255,255,0.8);
 }
 
 /* === RESPONSIVE === */
 @media (max-width: 768px) {
     .navbar {
-        padding: 0.5rem;
-    }
-    
-    .nav-links {
-        margin-left: 1rem;
+        flex-direction: column;
         gap: 0.5rem;
-    }
-    
-    .nav-links a {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.9rem;
     }
     
     .container {
         padding: 1rem;
         margin: 1rem;
     }
-    
+
     .action-buttons {
         flex-direction: column;
     }
-    
-    .d-flex {
+
+    .form-actions {
         flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start !important;
+        align-items: stretch;
     }
 }
 
 @media (max-width: 480px) {
-    .navbar-brand span {
-        display: none;
-    }
-    
-    .nav-links a span {
-        display: none;
-    }
-    
-    .products-table {
-        font-size: 0.875rem;
-    }
-    
+    .navbar-brand h5 { display: none; }
+    .products-table { font-size: 0.875rem; }
     .products-table th,
-    .products-table td {
-        padding: 0.5rem;
-    }
+    .products-table td { padding: 0.5rem; }
 }
