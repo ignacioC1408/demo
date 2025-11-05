@@ -39,6 +39,9 @@
   <header>Agregar / Editar Producto</header>
 
   <form th:action="@{/empleado/productos/guardar}" method="post" th:object="${producto}">
+    <!-- ⚠️ IMPORTANTE: AGREGAR ESTE CAMPO HIDDEN -->
+    <input type="hidden" th:field="*{id}" />
+    
     <label>Código Producto:</label>
     <input type="text" th:field="*{codigoProducto}" required>
 

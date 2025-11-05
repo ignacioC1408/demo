@@ -16,7 +16,6 @@
             "mainClass": "com.example.puntofacil.demo.PuntoFacilApplication",
             "projectName": "demo",
             "args": ["--server.port=8081"]
-            
         }
     ]
 }
