@@ -5,9 +5,13 @@ import java.math.BigDecimal;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,7 +25,7 @@ public class Producto {
     @Column(name = "codigo_producto", nullable = false, unique = true)
     private Integer codigoProducto;
 
-    @Column(nullable = false)
+    @Column(name = "nombre", nullable = false)
     private String nombre;
 
     @Column(name = "codigo_barra", unique = true)
@@ -30,27 +34,29 @@ public class Producto {
     @Column(name = "precio_base", precision = 10, scale = 2, nullable = false)
     private BigDecimal precioBase;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "unidad_medida", length = 10)
-    private String unidadMedida; // "UNIDAD", "KG", "GR", "LT", "ML"
+    private UnidadMedida unidadMedida;
     
-    @Column(precision = 10, scale = 3)
+    @Column(name = "stock" ,precision = 10, scale = 3, nullable = false)
     private BigDecimal stock;
 
-    // ✅ NUEVO CAMPO AGREGADO - con valor por defecto para no romper datos existentes
-    @Column(name = "categoria_id")
-    private Long categoriaId = 1L; // Valor por defecto
+    @ManyToOne 
+    @JoinColumn(name = "categoria_id") 
+    private Categoria categoria; 
+
     
     public Producto() {}
 
     public Producto(Integer codigoProducto, String nombre, String codigoBarra,
-                    BigDecimal precioBase, String unidadMedida, BigDecimal stock) {
+                    BigDecimal precioBase, UnidadMedida unidadMedida, BigDecimal stock, Categoria categoria) {
         this.codigoProducto = codigoProducto;
         this.nombre = nombre;
         this.codigoBarra = codigoBarra;
         this.precioBase = precioBase;
         this.unidadMedida = unidadMedida;
         this.stock = stock;
-        this.categoriaId = 1L; // Valor por defecto en constructor
+        this.categoria = categoria; 
     }
 
     // getters y setters
@@ -69,13 +75,12 @@ public class Producto {
     public BigDecimal getPrecioBase() { return precioBase; }
     public void setPrecioBase(BigDecimal precioBase) { this.precioBase = precioBase; }
 
-    public String getUnidadMedida() { return unidadMedida; }
-    public void setUnidadMedida(String unidadMedida) { this.unidadMedida = unidadMedida; }
+    public UnidadMedida getUnidadMedida() { return unidadMedida; }
+    public void setUnidadMedida(UnidadMedida unidadMedida) { this.unidadMedida = unidadMedida; }
 
     public BigDecimal getStock() { return stock; }
     public void setStock(BigDecimal stock) { this.stock = stock; }
 
-    // ✅ NUEVOS GETTER Y SETTER PARA categoriaId
-    public Long getCategoriaId() { return categoriaId; }
-    public void setCategoriaId(Long categoriaId) { this.categoriaId = categoriaId; }
+    public Categoria getCategoria() { return categoria; }
+    public void setCategoria(Categoria categoria) { this.categoria = categoria; }
 }

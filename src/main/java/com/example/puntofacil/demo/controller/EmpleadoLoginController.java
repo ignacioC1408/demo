@@ -52,12 +52,12 @@ public String procesarLogin(@RequestParam String username,
     session.setAttribute("empleado", empleado);
 
     // Redirige según el rol (usa los valores que tengas en tu BD)
-    switch (empleado.getRol().toUpperCase()) {
-        case "ADMIN", "DUENIO":
+    switch (empleado.getRol()) {
+        case DUENIO:
             return "redirect:/empleado/panel/admin";
-        case "CAJERO", "CAJERA":
+        case CAJERA:
             return "redirect:/empleado/panel/cajero"; // Cambié a cajero
-        case "VENDEDOR":
+        case VENDEDOR:
             return "redirect:/empleado/panel/vendedor";
         default:
             model.addAttribute("error", "Rol desconocido");

@@ -27,28 +27,31 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
+    @Column(name = "codigo_retiro", unique = true, length = 10, nullable = false)
+    private String codigoRetiro;
 
-    @Column(nullable = false)
+    @Column(name = "qr_code_url", length = 255)
+    private String qrCodeUrl;
+
+    @Column(name = "fecha", nullable = false)
     private LocalDateTime fecha;
 
-    @Column(nullable = false)
+    @Column(name = "total", precision = 10, scale = 2, nullable = false)
     private BigDecimal total;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 50, nullable = false)
+    @Column(name = "estado", length = 50, nullable = false)
     private EstadoPedido estado;
-
-    @Column(unique = true, length = 10)
-    private String codigoRetiro;
-
-    @Column(length = 255)
-    private String qrCodeUrl;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetallePedido> detalles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Pago> pagos = new ArrayList<>();
+
+    @ManyToOne(optional = false) 
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;    
 
     @PrePersist
     public void prePersist() {

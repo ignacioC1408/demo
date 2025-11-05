@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.puntofacil.demo.entity.Producto;
+import com.example.puntofacil.demo.entity.UnidadMedida;
 import com.example.puntofacil.demo.repository.ProductoRepository;
 
 @Controller
@@ -64,19 +65,21 @@ public class EmpleadoProductoController {
         return "redirect:/empleado/productos";
     }
 
-    // Endpoint para step
+     // Endpoint para devolver el step por unidad (usado en carrito)
     @GetMapping("/{id}/step")
     @ResponseBody
     public String getStep(@PathVariable Long id) {
-        Optional<Producto> opt = productoRepository.findById(id);
-        if (opt.isPresent()) {
-            Producto p = opt.get();
-            String um = p.getUnidadMedida();
-            if ("KG".equalsIgnoreCase(um)) return "0.1";
-            if ("UNIDAD".equalsIgnoreCase(um)) return "1";
-            if ("LT".equalsIgnoreCase(um)) return "0.1";
+    return productoRepository.findById(id)
+        .map(Producto::getUnidadMedida)
+        .map(um -> {
+            if (um == UnidadMedida.KG || um == UnidadMedida.LT) {
+                return "0.1";
+            }
+            if (um == UnidadMedida.UNIDAD) {
+                return "1";
+            }
             return "1";
-        }
-        return "1";
-    }
+        })
+        .orElse("1");
+    }    
 }

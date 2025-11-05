@@ -12,34 +12,35 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "detalles_pedido")
+@Table(name = "detalle_pedido")
 public class DetallePedido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "cantidad_unidad", precision = 10, scale = 3, nullable = false)
+    private BigDecimal cantidadUnidad;
+
+    @Column(name = "precio_unitario", precision = 10, scale = 2, nullable = false)
+    private BigDecimal precioUnitario;
+
     @ManyToOne(optional = false)
-    @JoinColumn(name = "pedido_id")
+    @JoinColumn(name = "pedido_id", nullable = false)
     private Pedido pedido;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "producto_id")
+    @JoinColumn(name = "producto_id", nullable = false)
     private Producto producto;
-
-    @Column(nullable = false)
-    private BigDecimal cantidadUnidad;
-
-    @Column(nullable = false)
-    private BigDecimal precioUnitario;
 
     // ===== CONSTRUCTORES =====
     public DetallePedido() {}
 
-    public DetallePedido(Producto producto, BigDecimal cantidad, BigDecimal precioUnitario) {
-        this.producto = producto;
-        this.cantidadUnidad = cantidad;
+    public DetallePedido(BigDecimal cantidadUnidad, BigDecimal precioUnitario, Producto producto, Pedido pedido) {
+        this.cantidadUnidad = cantidadUnidad;
         this.precioUnitario = precioUnitario;
+        this.producto = producto;
+        this.pedido = pedido;
     }
 
     // ===== GETTERS & SETTERS =====

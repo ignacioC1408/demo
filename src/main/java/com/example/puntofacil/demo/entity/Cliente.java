@@ -18,14 +18,14 @@ public class Cliente {
     @Column(name = "nombre_comercio", nullable = false)
     private String nombreComercio;
     
+    @Column(name = "direccion")
+    private String direccion;
+
     @Column(name = "email")
     private String email;
     
     @Column(name = "telefono")
     private String telefono;
-
-    @Column(name = "direccion")
-    private String direccion;
     
     // ==================
     // GETTERS y SETTERS

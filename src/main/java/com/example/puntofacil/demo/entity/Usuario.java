@@ -14,19 +14,25 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
+    @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @Column(unique = true, nullable = false)
-    private String username;
-
-    @Column(nullable = false)
-    private String password;
-
+    @Column(name = "email", unique = true)
     private String email;
+
+    @Column(name = "telefono")
     private String telefono;
+
+    @Column(name = "direccion")
     private String direccion;
 
+    @Column(name = "password", nullable = false)
+    private String password;
+
+    @Column(name = "username", unique = true, nullable = false)
+    private String username;
+    
     // ✅ Constructor vacío requerido por JPA
     public Usuario() {}
 

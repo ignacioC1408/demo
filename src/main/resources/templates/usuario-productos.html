@@ -35,9 +35,9 @@
         <label for="categoria" class="fw-semibold text-primary mb-0">Categoría:</label>
         <select id="categoria" name="categoria" class="form-select form-select-sm w-auto">
           <option value="">Todas</option>
-          <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nombre}"></option>
+          <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nombre}" th:selected="${c.id} == ${categoriasSeleccionada}"></option>
         </select>
-        <input id="buscar" type="text" class="form-control form-control-sm w-auto" placeholder="Buscar producto...">
+        <input id="buscar" name="buscar" type="text" th:value="${busqueda}"class="form-control form-control-sm w-auto" placeholder="Buscar producto...">
         <button id="btnBuscar" class="btn btn-primary btn-sm">Buscar</button>
       </div>
     </div>

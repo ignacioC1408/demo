@@ -33,7 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         Empleado empleado = optEmpleado.get();
 
-        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + empleado.getRol().toUpperCase());
+        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + empleado.getRol());
 
         return new User(
                 empleado.getUsername(),

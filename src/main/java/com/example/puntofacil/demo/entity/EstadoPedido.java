@@ -1,11 +1,12 @@
 package com.example.puntofacil.demo.entity;
 
 public enum EstadoPedido {
-    PENDIENTE,     // Pedido creado por el cliente
-    PESANDO,       // Vendedor pesa productos
-    LISTO,         // Vendedor marca listo
-    PAGADO,        // Cajera confirma el pago
-    CANCELADO      // Pedido anulado
+    PENDIENTE,
+    PAGADO,
+    PREPARANDO,
+    LISTO,
+    ENTREGADO,
+    CANCELADO
 ;
 
     public boolean isBlank() {

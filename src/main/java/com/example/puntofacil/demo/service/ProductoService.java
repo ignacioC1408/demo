@@ -3,15 +3,20 @@ package com.example.puntofacil.demo.service;
 import java.util.List;
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.puntofacil.demo.entity.Producto;
+import com.example.puntofacil.demo.repository.CategoriaRepository;
 import com.example.puntofacil.demo.repository.ProductoRepository;
 
 @Service
 public class ProductoService {
 
+    @Autowired
+    private CategoriaRepository categoriaRepository;
+    
     private final ProductoRepository repo;
     private final Random rnd = new Random();
 

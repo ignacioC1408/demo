@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.puntofacil.demo.entity.Empleado;
 import com.example.puntofacil.demo.entity.EstadoPedido;
+import com.example.puntofacil.demo.entity.EstadoRol;
 import com.example.puntofacil.demo.entity.Pedido;
 import com.example.puntofacil.demo.repository.EmpleadoRepository;
 import com.example.puntofacil.demo.repository.PedidoRepository;
@@ -50,13 +51,13 @@ public class EmpleadoPanelController {
         Empleado empleado = (Empleado) session.getAttribute("empleado");
         if (empleado == null) return "redirect:/empleado/login";
 
-        return switch (empleado.getRol().toUpperCase()) {
-            case "ADMIN", "DUENIO" -> "redirect:/empleado/panel/admin";
-            case "CAJERO", "CAJERA" -> "redirect:/empleado/panel/cajero";
-            case "VENDEDOR" -> "redirect:/empleado/panel/vendedor";
-            default -> {
-                redirectAttributes.addFlashAttribute("error", "Rol no válido");
-                yield "redirect:/empleado/login";
+        return switch (empleado.getRol()) {
+            case DUENIO ->"redirect:/empleado/panel/admin";
+            case CAJERA ->"redirect:/empleado/panel/cajero";
+            case VENDEDOR ->"redirect:/empleado/panel/vendedor";
+            default -> { 
+            redirectAttributes.addFlashAttribute("error", "Rol no válido");
+            yield "redirect:/empleado/login";
             }
         };
     }
@@ -64,7 +65,7 @@ public class EmpleadoPanelController {
     @GetMapping("/admin")
     public String panelAdmin(HttpSession session, Model model) {
         if (!addGlobalAttributes(session, model)) return "redirect:/empleado/login";
-        if (!validarRol(session, List.of("ADMIN", "DUENIO"))) return "redirect:/empleado/login?error=acceso_denegado";
+        if (!validarRol(session, List.of(EstadoRol.DUENIO))) return "redirect:/empleado/login?error=acceso_denegado";
         agregarEstadisticasAdmin(model);
         return "panel-admin";
     }
@@ -72,7 +73,7 @@ public class EmpleadoPanelController {
     @GetMapping("/cajero")
     public String panelCajero(HttpSession session, Model model) {
         if (!addGlobalAttributes(session, model)) return "redirect:/empleado/login";
-        if (!validarRol(session, List.of("CAJERO", "CAJERA", "ADMIN", "DUENIO"))) return "redirect:/empleado/login?error=acceso_denegado";
+        if (!validarRol(session, List.of(EstadoRol.CAJERA, EstadoRol.DUENIO))) return "redirect:/empleado/login?error=acceso_denegado";
         agregarEstadisticasCajero(model);
         return "panel-cajero";
     }
@@ -80,7 +81,7 @@ public class EmpleadoPanelController {
     @GetMapping("/vendedor")
     public String panelVendedor(HttpSession session, Model model) {
         if (!addGlobalAttributes(session, model)) return "redirect:/empleado/login";
-        if (!validarRol(session, List.of("VENDEDOR", "ADMIN", "DUENIO"))) return "redirect:/empleado/login?error=acceso_denegado";
+        if (!validarRol(session, List.of(EstadoRol.VENDEDOR, EstadoRol.DUENIO))) return "redirect:/empleado/login?error=acceso_denegado";
         agregarEstadisticasVendedor(model);
         return "panel-vendedor";
     }
@@ -138,14 +139,15 @@ public class EmpleadoPanelController {
         Empleado empleado = (Empleado) session.getAttribute("empleado");
         if (empleado == null) return false;
         model.addAttribute("username", empleado.getUsername());
-        model.addAttribute("rol", empleado.getRol().toUpperCase());
+        model.addAttribute("rol", empleado.getRol());
         return true;
     }
 
-    private boolean validarRol(HttpSession session, List<String> rolesPermitidos) {
+    private boolean validarRol(HttpSession session, List<EstadoRol> rolesPermitidos) {
         Empleado empleado = (Empleado) session.getAttribute("empleado");
-        return empleado != null && rolesPermitidos.stream()
-                .anyMatch(rol -> rol.equalsIgnoreCase(empleado.getRol()));
+        return empleado != null 
+            && empleado.getRol() != null
+            && rolesPermitidos.contains(empleado.getRol());
     }
 
     private void agregarEstadisticasAdmin(Model model) {
@@ -161,10 +163,7 @@ public class EmpleadoPanelController {
         LocalDate finMes = mesActual.atEndOfMonth();
         BigDecimal ingresosMensuales = pedidoRepository.sumTotalByFechaBetween(inicioMes.atStartOfDay(), finMes.atTime(23, 59, 59));
         model.addAttribute("ingresosMensuales", ingresosMensuales != null ? ingresosMensuales : BigDecimal.ZERO);
-
-        model.addAttribute("empleadosActivos", empleadoRepository.countByEstado("ACTIVO"));
         model.addAttribute("productosStock", productoRepository.count());
-        model.addAttribute("ultimosUsuarios", empleadoRepository.findTop4ByOrderByFechaAltaDesc());
     }
 
     private void agregarEstadisticasCajero(Model model) {

@@ -23,72 +23,92 @@ public class Pago {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
+    @JoinColumn(name = "pedido_id", nullable = false)
+    private Pedido pedido;
 
-    @Column(nullable = false)
+    @Column(name = "monto", precision = 10, scale = 2)
     private BigDecimal monto;
 
-    @Column(name = "fecha_creacion")
-    private LocalDateTime fechaCreacion = LocalDateTime.now();
-
-    @Column(name = "preference_id")
-    private String preferenceId;
-
-    @Column(name = "payment_id")
-    private String paymentId;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "metodo")
+    private EstadoMetodo metodo;
 
     @Enumerated(EnumType.STRING)
     private EstadoPago estado = EstadoPago.PENDIENTE;
 
-    @Column(name = "fecha_actualizacion")
-    private LocalDateTime fechaActualizacion;
+    @Column(name = "mp_payment_id", length = 100)
+    private String mpPaymentId;
+
+    @Column(name = "fecha")
+    private LocalDateTime fecha;
+    
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+
+
 
     // Constructor vacío requerido por JPA
     public Pago() {}
 
     // Constructor para crear nuevo pago
-    public Pago(Usuario usuario, BigDecimal monto, String preferenceId) {
-        this.usuario = usuario;
+    public Pago(Long id, Pedido pedido, BigDecimal monto, EstadoMetodo metodo, EstadoPago estado,
+             String mpPaymentId, LocalDateTime fecha) {
+        this.id = id;
+        this.pedido = pedido;
         this.monto = monto;
-        this.preferenceId = preferenceId;
-    }
-
-    // Enum para estados del pago
-    public enum EstadoPago {
-        PENDIENTE, APROBADO, RECHAZADO, CANCELADO
-    }
-
-    // ========== GETTERS Y SETTERS ==========
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Usuario getUsuario() { return usuario; }
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
-
-    public BigDecimal getMonto() { return monto; }
-    public void setMonto(BigDecimal monto) { this.monto = monto; }
-
-    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
-
-    public String getPreferenceId() { return preferenceId; }
-    public void setPreferenceId(String preferenceId) { this.preferenceId = preferenceId; }
-
-    public String getPaymentId() { return paymentId; }
-    public void setPaymentId(String paymentId) { this.paymentId = paymentId; }
-
-    public EstadoPago getEstado() { return estado; }
-    public void setEstado(EstadoPago estado) { 
+        this.metodo = metodo;
         this.estado = estado;
-        this.fechaActualizacion = LocalDateTime.now();
+        this.mpPaymentId = mpPaymentId;
+        this.fecha = fecha;
+    }
+    // ========== GETTERS Y SETTERS ==========
+    
+    public Long getId() {
+        return id;
     }
 
-    public LocalDateTime getFechaActualizacion() { return fechaActualizacion; }
-    public void setFechaActualizacion(LocalDateTime fechaActualizacion) { this.fechaActualizacion = fechaActualizacion; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    // Método útil para verificar si el pago está aprobado
-    public boolean isAprobado() {
-        return EstadoPago.APROBADO.equals(this.estado);
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
+    }
+
+    public BigDecimal getMonto() {
+        return monto;
+    }
+
+    public void setMonto(BigDecimal monto) {
+        this.monto = monto;
+    }
+
+    public EstadoMetodo getMetodo() {
+        return metodo;
+    }
+
+    public void setMetodo(EstadoMetodo metodo) {
+        this.metodo = metodo;
+    }
+
+    public EstadoPago getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoPago estado) {
+        this.estado = estado;
+    }
+
+    public LocalDateTime getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDateTime fecha) {
+        this.fecha = fecha;
     }
 }

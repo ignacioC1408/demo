@@ -35,7 +35,7 @@ public class EmpleadoVentaController {
         Empleado empleado = (Empleado) session.getAttribute("empleado");
         if (empleado == null) return "redirect:/empleado/login";
         model.addAttribute("username", empleado.getUsername());
-        model.addAttribute("rol", empleado.getRol().toUpperCase());
+        model.addAttribute("rol", empleado.getRol());
 
         // Fechas por defecto = hoy
         if (desde == null) desde = LocalDate.now();
