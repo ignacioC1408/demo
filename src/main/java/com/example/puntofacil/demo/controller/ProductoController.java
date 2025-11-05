@@ -23,9 +23,10 @@ public class ProductoController {
 
     @Autowired
     private ProductoRepository productoRepository;
+    @Autowired
     private CategoriaRepository categoriaRepository;
 
-     @GetMapping("/lista")
+    @GetMapping
     public String listarProductos(
             @RequestParam(required = false) Long categoria,
             @RequestParam(required = false) String buscar,
@@ -45,7 +46,7 @@ public class ProductoController {
         model.addAttribute("categorias", categoriaRepository.findAll());
         model.addAttribute("categoriaSeleccionada", categoria);
         model.addAttribute("busqueda", buscar);
-        return "usuario-producto";
+        return "usuario-productos";
     }
 
     // Endpoint para devolver el step por unidad (usado en carrito)

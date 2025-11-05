@@ -92,19 +92,4 @@ public class UsuarioController {
         session.invalidate();
         return "redirect:/usuario/login?logout=true";
     }
-
-    // Vista de productos
-    @GetMapping("/productos")
-    public String verProductos(Model model, HttpSession session) {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) {
-            return "redirect:/usuario/login?error=debes_iniciar_sesion";
-        }
-
-        List<Producto> productos = productoRepository.findAll();
-        model.addAttribute("usuario", usuario);
-        model.addAttribute("productos", productos);
-
-        return "usuario-productos";
-    }
 }
